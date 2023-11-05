@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -19,3 +20,14 @@ class Room(models.Model):
 
     def __str__(self):
         return f'{self.room_number}: {self.room_type} with {self.room_beds} beds for {self.room_capacity} people'
+    
+    
+class Booking(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    check_in = models.DateTimeField()
+    check_out = models.DateTimeField()
+    
+    def __str__(self):
+        return f'{self.user} has booked {self.room} from {self.check_in} to {self.check_out}'
+    
