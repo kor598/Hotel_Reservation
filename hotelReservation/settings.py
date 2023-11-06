@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     
     # user created apps
     'registration',
-    'registration.booking_functions',
+    'bookings',
+    'bookings.booking_functions',
 ]
 
 MIDDLEWARE = [

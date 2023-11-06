@@ -1,5 +1,5 @@
 import datetime
-from registration.models import Room, Booking
+from bookings.models import Room, Booking
 
 # checks availability of rooms when booking
 def check_availability(room, check_in, check_out):
