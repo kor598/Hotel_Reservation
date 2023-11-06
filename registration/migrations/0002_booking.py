@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('hotel', '0001_initial'),
+        ('registration', '0001_initial'),
     ]
 
     operations = [
@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('check_in', models.DateTimeField()),
                 ('check_out', models.DateTimeField()),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='hotel.room')),
+                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='registration.room')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),

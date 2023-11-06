@@ -48,8 +48,8 @@ INSTALLED_APPS = [
     
     
     # user created apps
-    'hotel',
-    'hotel.booking_functions',
+    'registration',
+    'registration.booking_functions',
 ]
 
 MIDDLEWARE = [

@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.views.generic import ListView, FormView
 from .models import Room, Booking
 from .forms import AvailabilityForm
-from hotel.booking_functions.availability import check_availability
+from registration.booking_functions.availability import check_availability
 
 # temp view to see rooms
 class RoomList(ListView):
