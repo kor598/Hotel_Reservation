@@ -15,17 +15,17 @@ from bookings.models import Room, Booking
 # temp view to see rooms
 class RoomList(ListView):
     model = Room
-    template_name = 'bookings/room_list.html' 
+    template_name = 'room_list.html' 
     context_object_name = 'room_list'
 
 class BookingList(ListView):
     model = Booking
-    template_name = 'bookings/booking_list.html'
+    template_name = 'booking_list.html'
     context_object_name = 'booking_list'
     
 class BookingForm(FormView):
     form_class = AvailabilityForm
-    template_name = 'bookings/availability_form.html'
+    template_name = 'availability_form.html'
     
     def form_valid(self,form):
         data = form.cleaned_data
