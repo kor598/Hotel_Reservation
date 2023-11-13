@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'paypal.standard.ipn',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     #User created
     'accounts.apps.AccountsConfig',
     'bookings',
+    'payments',
 ]
 
 AUTH_USER_MODEL = "accounts.User" 
@@ -126,3 +128,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Paypal settings
+
+PAYPAL_TEST = True
+
+PAYPAL_RECEIVER_EMAIL = 'somesandboxemail@gmail.com'
