@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
-from .forms import SignupForm, LoginForm
+from .forms import LoginForm, RegisterForm, EditProfileForm
 from django.contrib.auth import authenticate, login
+from .models import User, Guest, Staff
+#from django.urls import reverse
+
 # Create your views here.
 
 
@@ -11,7 +14,7 @@ def index(request):
 def register(request):
     msg = None
     if request.method == 'POST':
-        form = LoginForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             msg = 'user created'
@@ -19,10 +22,28 @@ def register(request):
         else:
             msg = 'form is not valid'
     else:
-        form = LoginForm()
+        form = RegisterForm()
     return render(request,'register.html', {'form': form, 'msg': msg})
 
+def edit_profile(request):
+    user = request.user
 
+    # Check if the user has the 'GUEST' role
+    if user.role == User.Role.GUEST:
+        if request.method == 'POST':
+            form = EditProfileForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
+                # Redirect to a success page or back to the form
+                return redirect('success_page')
+        else:
+            form = EditProfileForm(instance=user)
+
+        return render(request, 'edit_profile.html', {'form': form})
+    else:
+        # Redirect to an unauthorized page or display a message
+        return render(request, 'unauthorized.html')  # Create an unauthorized template
+    
 def login_view(request):
     form = LoginForm(request.POST or None)
     msg = None
@@ -31,19 +52,21 @@ def login_view(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
-            if user is not None and user.is_admin:
+            if user is not None:
                 login(request, user)
-                return redirect('adminpage')
-            elif user is not None and user.is_staff:
-                login(request, user)
-                return redirect('staff')
-            elif user is not None and user.is_guest:
-                login(request, user)
-                return redirect('guest')
+                
+                # Check the role and redirect based on the role
+                if user.role == User.Role.ADMIN:
+                    return redirect('adminpage')
+                elif user.role == User.Role.STAFF:
+                    return redirect('staff')
+                elif user.role == User.Role.GUEST:
+                    return redirect('guest')
             else:
-                msg= 'invalid credentials'
+                msg = 'Invalid credentials'
         else:
-            msg = 'error validating form'
+            msg = 'Error validating form'
+    
     return render(request, 'login.html', {'form': form, 'msg': msg})
 
 
@@ -57,3 +80,4 @@ def staff(request):
 
 def guest(request):
     return render(request,'guest.html')
+

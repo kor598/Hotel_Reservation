@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import User
 
 class LoginForm(forms.Form):
@@ -17,8 +17,8 @@ class LoginForm(forms.Form):
             }
         )
     )
-    
-class SignupForm(UserCreationForm):
+
+class RegisterForm(UserCreationForm):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -47,15 +47,8 @@ class SignupForm(UserCreationForm):
             }
         )
     )
-    role = forms.ChoiceField(
-        choices=User.Role.choices,
-        widget=forms.Select(
-            attrs={
-                "class": "form-control"
-            }
-        )
-    )
 
+class EditProfileForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', 'role')
+        fields = ('username', 'email')

@@ -9,21 +9,18 @@ class User(AbstractUser):
         ADMIN = "ADMIN", "Admin"
         GUEST = "GUEST", "Guest"
         STAFF = "STAFF", "Staff"
-
-    base_role = Role.GUEST
-
     role = models.CharField(max_length=50, choices=Role.choices)
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            self.role = self.base_role
-            return super().save(*args, **kwargs)
+        if not self.pk:  # Checking if it's a new record
+            self.role = User.Role.GUEST  # Set default role as Guest
+        super().save(*args, **kwargs)
 
 
 class GuestManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         results = super().get_queryset(*args, **kwargs)
-        return results.filter(role=User.Role.STUDENT)
+        return results.filter(role=User.Role.GUEST)
 
 
 class Guest(User):
@@ -48,7 +45,8 @@ def create_guest_profile(sender, instance, created, **kwargs):
 class GuestProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     guest_id = models.IntegerField(null=True, blank=True)
-
+    # firstname = models.CharField(max_length=255)
+    # lastname = models.CharField(max_length=255)
 
 class StaffManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):

@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>employee page</title>
+    <title>guest page</title>
 </head>
 <body>
-    <h1> hello {{ user.username }} your role is guest</h1>
+    <h1> hello {{ user.username }} you are a guest</h1>
+    <a href="{% url 'bookings:booking_view' %}">Bookings</a>
 </body>
 </html>
