@@ -17,8 +17,8 @@ class LoginForm(forms.Form):
             }
         )
     )
-    
-class SignupForm(UserCreationForm):
+
+class RegisterForm(UserCreationForm):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -47,15 +47,15 @@ class SignupForm(UserCreationForm):
             }
         )
     )
-    role = forms.ChoiceField(
-        choices=User.Role.choices,
-        widget=forms.Select(
-            attrs={
-                "class": "form-control"
-            }
-        )
-    )
+    # role = forms.ChoiceField(
+    #     choices=User.Role.choices,
+    #     widget=forms.Select(
+    #         attrs={
+    #             "class": "form-control"
+    #         }
+    #     )
+    # )
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', 'role')
+        fields = ('username', 'email', 'password1', 'password2')

@@ -9,21 +9,18 @@ class User(AbstractUser):
         ADMIN = "ADMIN", "Admin"
         GUEST = "GUEST", "Guest"
         STAFF = "STAFF", "Staff"
-
-    base_role = Role.GUEST
-
     role = models.CharField(max_length=50, choices=Role.choices)
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            self.role = self.base_role
-            return super().save(*args, **kwargs)
+        if not self.pk:  # Checking if it's a new record
+            self.role = User.Role.GUEST  # Set default role as Guest
+        super().save(*args, **kwargs)
 
 
 class GuestManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         results = super().get_queryset(*args, **kwargs)
-        return results.filter(role=User.Role.STUDENT)
+        return results.filter(role=User.Role.GUEST)
 
 
 class Guest(User):
