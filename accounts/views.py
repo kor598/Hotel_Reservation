@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, EditProfileForm
 from django.contrib.auth import authenticate, login
 from .models import User, Guest, Staff
+#from django.urls import reverse
 
 # Create your views here.
 
@@ -24,7 +25,25 @@ def register(request):
         form = RegisterForm()
     return render(request,'register.html', {'form': form, 'msg': msg})
 
+def edit_profile(request):
+    user = request.user
 
+    # Check if the user has the 'GUEST' role
+    if user.role == User.Role.GUEST:
+        if request.method == 'POST':
+            form = EditProfileForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
+                # Redirect to a success page or back to the form
+                return redirect('success_page')
+        else:
+            form = EditProfileForm(instance=user)
+
+        return render(request, 'edit_profile.html', {'form': form})
+    else:
+        # Redirect to an unauthorized page or display a message
+        return render(request, 'unauthorized.html')  # Create an unauthorized template
+    
 def login_view(request):
     form = LoginForm(request.POST or None)
     msg = None
@@ -61,3 +80,4 @@ def staff(request):
 
 def guest(request):
     return render(request,'guest.html')
+
