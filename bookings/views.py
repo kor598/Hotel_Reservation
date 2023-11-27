@@ -84,13 +84,12 @@ class BookingForm(LoginRequiredMixin, FormView):
         if available_rooms:
             room = available_rooms[0]
 
-            # Fetch the 'Guest' user from User model
             guest_users = User.objects.filter(role=User.Role.GUEST)  
             if guest_users.exists():
                 guest_user = guest_users.first()
 
                 booking = Booking.objects.create(
-                    user=guest_user,  # Associate booking with the 'Guest' user
+                    user=guest_user,  
                     room=room,
                     check_in=data['check_in'],
                     check_out=data['check_out']
@@ -101,7 +100,7 @@ class BookingForm(LoginRequiredMixin, FormView):
                     self.request,
                     f'Your booking for {room} from {data["check_in"]} to {data["check_out"]} has been confirmed!! Thank you for choosing us.'
                 )
-                return HttpResponse('Booking created for guest user!')
+                return HttpResponse('Booking created {guest_user}!')
             else:
                 return HttpResponse('No users of type "Guest" found. Cannot create booking.')
         else:
