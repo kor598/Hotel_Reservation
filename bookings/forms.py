@@ -8,6 +8,6 @@ class AvailabilityForm(forms.Form):
     )
     
     room_type = forms.ChoiceField(label='Room Type', choices=ROOM_TYPES, required=True)
-    check_in = forms.DateTimeField(label='Check In', required=True, input_formats=["%Y-%m-%d%H:%M", ])
-    check_out = forms.DateTimeField(label='Check Out', required=True, input_formats=["%Y-%m-%d%H:%M", ])
+    check_in = forms.DateTimeField(label='Check In', required=True, input_formats=["%Y-%m-%d", ])
+    check_out = forms.DateTimeField(label='Check Out', required=True, input_formats=["%Y-%m-%d", ])
         
