@@ -45,7 +45,8 @@ def create_guest_profile(sender, instance, created, **kwargs):
 class GuestProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     guest_id = models.IntegerField(null=True, blank=True)
-
+    # firstname = models.CharField(max_length=255)
+    # lastname = models.CharField(max_length=255)
 
 class StaffManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
