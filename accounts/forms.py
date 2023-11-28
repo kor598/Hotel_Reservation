@@ -47,6 +47,17 @@ class RegisterForm(UserCreationForm):
             }
         )
     )
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        try:
+            User.objects.get(username__iexact=username)  # Use your custom user model's manager
+        except User.DoesNotExist:
+            return username
+        raise forms.ValidationError('This username is already taken. Please choose another.')
 
 class EditProfileForm(UserChangeForm):
     class Meta:
