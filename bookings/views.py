@@ -1,8 +1,11 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.shortcuts import render
 from django.views.generic import ListView, FormView, View
+from django.urls import reverse
 from .forms import AvailabilityForm
 from bookings.availability import check_availability
 from bookings.models import Room, Booking
@@ -13,15 +16,39 @@ from accounts.models import User
 
 
 # temp view to see rooms
-class RoomListView(ListView):
-    model = Room
-    template_name = 'room_list.html' 
-    context_object_name = 'room_list'
+def RoomListView(request):
+    room = Room.objects.all()[0]
+    room_types = dict(room.ROOM_TYPES)
+    print('types = ', room_types)
+    
+    room_values = room_types.values()
+    print('values = ', room_values)
+    room_list = []
+    
+    for room_type in room_types:
+        room = room_types.get(room_type)
+        room_url = reverse('bookings:RoomDetailView', kwargs={
+                            'type': room_type})
+        room_list.append((room, room_url))
+    
+    context = {
+        "room_list": room_list,
+    }
+    return render(request, 'room_list_view.html', context)
 
 class BookingList(ListView):
     model = Booking
     template_name = 'booking_list.html'
     context_object_name = 'booking_list'
+    
+    def get_queryset(self, *args, **kwargs):
+        if self.request.user.is_staff:
+            booking_list = Booking.objects.all()
+            return booking_list
+        else:
+            booking_list = Booking.objects.filter(user=self.request.user)
+            return booking_list
+    
     
 #     actual room view
 class RoomDetailView(View):
@@ -56,15 +83,12 @@ class RoomDetailView(View):
                 
         if len(available_rooms) > 0:        
             room = available_rooms[0]
-            guest_users = User.objects.filter(role=User.Role.GUEST)  
-            if guest_users.exists():
-                guest_user = guest_users.first()
                 
-                booking = Booking.objects.create(
-                    user = guest_user,
-                    room = room,
-                    check_in = data['check_in'],
-                    check_out = data['check_out']
+            booking = Booking.objects.create(
+                user=self.request.user,  
+                room = room,
+                check_in = data['check_in'],
+                check_out = data['check_out']
             )        
             booking.save()
             messages.success(self.request, f'Your booking for {room} from {data["check_in"]} to {data["check_out"]} has been confirmed!! Thank you for choosing us.')
@@ -84,24 +108,19 @@ class BookingForm(LoginRequiredMixin, FormView):
         if available_rooms:
             room = available_rooms[0]
 
-            guest_users = User.objects.filter(role=User.Role.GUEST)  
-            if guest_users.exists():
-                guest_user = guest_users.first()
+            booking = Booking.objects.create(
+                user=self.request.user,  
+                room=room,
+                check_in=data['check_in'],
+                check_out=data['check_out']
+            )
+            booking.save()
 
-                booking = Booking.objects.create(
-                    user=guest_user,  
-                    room=room,
-                    check_in=data['check_in'],
-                    check_out=data['check_out']
-                )
-                booking.save()
-
-                messages.success(
-                    self.request,
-                    f'Your booking for {room} from {data["check_in"]} to {data["check_out"]} has been confirmed!! Thank you for choosing us.'
-                )
-                return HttpResponse('Booking created {guest_user}!')
-            else:
-                return HttpResponse('No users of type "Guest" found. Cannot create booking.')
+            messages.success(
+                self.request,
+                f'Your booking for {room} from {data["check_in"]} to {data["check_out"]} has been confirmed!! Thank you for choosing us.'
+            )
+            return HttpResponse('Booking created {guest_user}!')
         else:
             return HttpResponse('No rooms available for the selected dates. Please try a different room or date.')
+        

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #User created
     'accounts.apps.AccountsConfig',
     'bookings',
+    #'accounts',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -116,6 +117,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+# SITE_ID = 1
 
 
 # Static files (CSS, JavaScript, Images)

@@ -1,3 +1,6 @@
+#Database causes conflicts, after pulling always check for migrations
+db.sqlite3
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
