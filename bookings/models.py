@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse_lazy
 from accounts.models import User
 
 # Create your models here.
@@ -32,5 +33,11 @@ class Booking(models.Model):
     def __str__(self):
         return f'{self.user} has booked {self.room} from {self.check_in} to {self.check_out}'
     
+    def get_room_type(self):
+        room_types = dict(self.room.ROOM_TYPES)
+        room_type = room_types.get(self.room.room_type)
+        return room_type
     
+    def get_cancel_booking_url(self):
+        return reverse_lazy('bookings:CancelBookingView', args = [self.pk ])
     
