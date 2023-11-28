@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class LoyaltySystem(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Add this line to link with the User model
+    user = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'role': User.Role.GUEST})
     name = models.CharField(max_length=255)
     total_points = models.IntegerField(default=0)
     membership_tier = models.CharField(max_length=50, default="Standard")
