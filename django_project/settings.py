@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #User created
     'accounts.apps.AccountsConfig',
     'bookings',
+    #'accounts',
 ]
 
 AUTH_USER_MODEL = "accounts.User" 

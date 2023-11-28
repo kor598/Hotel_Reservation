@@ -123,3 +123,4 @@ class BookingForm(LoginRequiredMixin, FormView):
             return HttpResponse('Booking created {guest_user}!')
         else:
             return HttpResponse('No rooms available for the selected dates. Please try a different room or date.')
+        
