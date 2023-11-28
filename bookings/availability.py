@@ -8,8 +8,8 @@ def check_availability(room, check_in, check_out):
     # Check if check_in and check_out are datetime objects. If not, convert them
     if not isinstance(check_in, datetime.datetime) or not isinstance(check_out, datetime.datetime):
         try:
-            check_in = datetime.datetime.strptime(check_in, "%Y-%m-%d") 
-            check_out = datetime.datetime.strptime(check_out, "%Y-%m-%d") 
+            check_in = datetime.datetime.strptime(check_in, "%Y-%m-%d").date()
+            check_out = datetime.datetime.strptime(check_out, "%Y-%m-%d").date()
         except ValueError:
             return False 
     
