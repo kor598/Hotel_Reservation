@@ -61,7 +61,7 @@ def login_view(request):
                 elif user.role == User.Role.STAFF:
                     return redirect('staff')
                 elif user.role == User.Role.GUEST:
-                    return redirect('guest')
+                    return redirect('accounts:guestpls')
             else:
                 msg = 'Invalid credentials'
         else:
@@ -78,6 +78,9 @@ def staff(request):
     return render(request,'staff.html')
 
 
-def guest(request):
-    return render(request,'guest.html')
+def guestpls(request):
+    return render(request,'guesttemp.html')
 
+# In views.py
+def test_view(request):
+    return render(request, 'test.html')
