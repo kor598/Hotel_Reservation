@@ -1,0 +1,20 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking List</title>
+    <script src="https://kit.fontawesome.com/692189991f.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/booking_list_view.css' %}">
+
+</head>
+
+<body>
+    {%for booking in booking_list%}
+    <h2>{{booking}}</h2>
+    {%endfor%}
+</body>
+
+</html>
