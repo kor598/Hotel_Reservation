@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.shortcuts import render
 from django.views.generic import ListView, FormView, View
+from django.urls import reverse
 from .forms import AvailabilityForm
 from bookings.availability import check_availability
 from bookings.models import Room, Booking
@@ -13,10 +14,25 @@ from accounts.models import User
 
 
 # temp view to see rooms
-class RoomListView(ListView):
-    model = Room
-    template_name = 'room_list.html' 
-    context_object_name = 'room_list'
+def RoomListView(request):
+    room = Room.objects.all()[0]
+    room_types = dict(room.ROOM_TYPES)
+    print('types = ', room_types)
+    
+    room_values = room_types.values()
+    print('values = ', room_values)
+    room_list = []
+    
+    for room_type in room_types:
+        room = room_types.get(room_type)
+        room_url = reverse('bookings:RoomDetailView', kwargs={
+                            'type': room_type})
+        room_list.append((room, room_url))
+    
+    context = {
+        "room_list": room_list,
+    }
+    return render(request, 'room_list_view.html', context)
 
 class BookingList(ListView):
     model = Booking

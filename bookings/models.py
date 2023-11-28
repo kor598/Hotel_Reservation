@@ -5,6 +5,7 @@ from accounts.models import User
 
 class Room(models.Model):
     ROOM_TYPES = (
+        # key, value
         ('SINGLE', 'Single'),
         ('DOUBLE', 'Double'),
         ('FAMILY', 'Family'),
