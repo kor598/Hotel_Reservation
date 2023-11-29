@@ -1,38 +1,42 @@
 from .payment_strategies import PaymentStrategy
-from django.shortcuts import render, redirect
-from paypal.standard.forms import PayPalPaymentsForm
-from django.contrib import messages
-from django.urls import reverse
+from django.views import View
 from django.conf import settings
-# temporary
 import uuid
+from paypal.standard.forms import PayPalPaymentsForm
+from django.urls import reverse
+from django.shortcuts import render, redirect
+# from django.contrib import messages
+
 
 # concrete strategy for PayPal
-class PaypalPaymentProcessor(PaymentStrategy):
-
-    def process_payment(self, request):
+class PaypalPaymentProcessor(PaymentStrategy, View):
+# add self later
+    def process_payment(request):
         host = request.get_host()
 
         paypal_dict = {
             'business': settings.PAYPAL_RECEIVER_EMAIL,
-            'amount': '20.00', # replqce with order total later
-            'item_name': 'Order 1', # replace with order number later
+            'amount': '20.00',  # replace with order total later
+            'item_name': 'Order 1',  # replace with order number later
             'invoice': str(uuid.uuid4()),
             'currency_code': 'USD',
-            'notify_url': 'http://{}{}'.format(host,reverse('paypal-ipn')),
-            'return_url': 'http://{}{}'.format(host,reverse('payment-return')),
-            'cancel_return': 'http://{}{}'.format(host,reverse('payment_cancelled')),
+            'notify_url': f'http://{host}{reverse("paypal-ipn")}',
+            'return_url': f'http://{host}{reverse("paypal-return")}',
+            'cancel_return': f'http://{host}{reverse("paypal-cancel")}',
         }
+
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {'form': form}
         return render(request, 'payment.html', context)
-    
-    def handle_success(self, request):
-        messages.success(request, 'Your payment was successful')
-        return redirect('process_payment', processor_type='paypal')
-    
-        print("Payment via PayPal was successful")
 
-    def handle_failure(self, request):
-        messages.error(request, 'Your order has been cancelled')
-        return redirect('process_payment', processor_type='paypal')
+    def payment_success(request):
+        # messages.success(request, 'Your order has been successfully processed')
+        return render(request, 'success.html')
+        #return redirect(reverse('success'))
+
+
+    def payment_failure(request):
+        # messages.error(request, 'Your order has been cancelled')
+        return render(request, 'cancelled.html')
+        # return redirect(reverse('cancelled'))
+
