@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse_lazy
 from accounts.models import User
 from .room_status import RoomStatus
 # Create your models here.
@@ -41,12 +42,18 @@ class Room(models.Model):
         self.save()
     
 class Booking(models.Model):
-    User = models.ForeignKey(User, on_delete=models.CASCADE)  # Ensure it's referencing the correct User model
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Ensure it's referencing the correct User model
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    check_in_date = models.DateField()
-    check_out_date = models.DateField()
+    check_in_date = models.DateTimeField()
+    check_out_date = models.DateTimeField()
     def __str__(self):
         return f'{self.user} has booked {self.room} from {self.check_in_date} to {self.check_out_date}'
     
+    def get_room_type(self):
+        room_types = dict(self.room.ROOM_TYPES)
+        room_type = room_types.get(self.room.room_type)
+        return room_type
     
+    def get_cancel_booking_url(self):
+        return reverse_lazy('bookings:CancelBookingView', args = [self.pk ])
     
