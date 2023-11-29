@@ -1,4 +1,4 @@
-from .payment_processor import PaymentProcessor
+from .payment_strategies import PaymentStrategy
 from django.shortcuts import render, redirect
 from paypal.standard.forms import PayPalPaymentsForm
 from django.contrib import messages
@@ -8,7 +8,7 @@ import uuid
 
 
 
-class PaypalPaymentProcessor(PaymentProcessor):
+class PaypalPaymentProcessor(PaymentStrategy):
     def processPayment(self, request):
         host = request.get_host()
 

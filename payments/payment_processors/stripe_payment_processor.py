@@ -1,6 +1,6 @@
-from .payment_processor import PaymentProcessor
+from .payment_strategies import PaymentStrategy
 
-class StripePaymentProcessor(PaymentProcessor):
+class StripePaymentProcessor(PaymentStrategy):
     def processPayment(self):
         # stripe process implemeation
         print("Payment processed with Stripe")
