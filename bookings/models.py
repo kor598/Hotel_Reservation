@@ -45,9 +45,18 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     check_in_date = models.DateField()
     check_out_date = models.DateField()
+    number_of_nights = models.IntegerField(blank=True, null=True)  # New field for storing the number of nights
 
     def __str__(self):
         return f'{self.user} has booked {self.room} from {self.check_in_date} to {self.check_out_date}'
     
-    
+    def calculate_nights(self):
+        # Calculate the number of nights by subtracting check_in_date from check_out_date
+        # This assumes check_out_date is always greater than or equal to check_in_date
+        return (self.check_out_date - self.check_in_date).days
+
+    def save(self, *args, **kwargs):
+        # Override the save method to calculate and save the number_of_nights
+        self.number_of_nights = self.calculate_nights()
+        super().save(*args, **kwargs)
     

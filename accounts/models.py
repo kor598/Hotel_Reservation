@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
 ####Managers##########################################
 
 class UserManager(BaseUserManager):
@@ -90,7 +89,12 @@ class StaffProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     staff_id = models.IntegerField(null=True, blank=True)
 
-
+@receiver(post_save, sender=Guest)
+def create_loyalty_system(sender, instance, created, **kwargs):
+    from loyaltySystem.models import LoyaltySystem
+    if created and instance.role == User.Role.GUEST:
+        LoyaltySystem.objects.create(user=instance, total_points=0, membership_tier='Standard')
+        
 @receiver(post_save, sender=Staff)
 def create_staff_profile(sender, instance, created, **kwargs):
     if created and instance.role == User.Role.STAFF:

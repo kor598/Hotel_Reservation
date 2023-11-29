@@ -18,7 +18,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             msg = 'user created'
-            return redirect('login_view')
+            return redirect('accounts:login_view')
         else:
             msg = 'form is not valid'
     else:

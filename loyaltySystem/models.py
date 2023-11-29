@@ -1,17 +1,13 @@
 from django.db import models
 from datetime import datetime, timedelta
+from bookings.models import Booking
 from accounts.models import User
-
 
 class LoyaltySystem(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'role': User.Role.GUEST})
-    name = models.CharField(max_length=255)
     total_points = models.IntegerField(default=0)
     membership_tier = models.CharField(max_length=50, default="Standard")
-    last_checkin_date = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        abstract = True
+    #last_checkin_date = models.DateTimeField(auto_now_add=True)
 
     def calculate_points(self, nights):
         loyalty_points = {
@@ -23,14 +19,15 @@ class LoyaltySystem(models.Model):
         self.total_points += nights * loyalty_points.get(self.membership_tier, 0)
 
     def update_membership_tier(self):
-        stays_last_366_days = self.stays.filter(date__gte=datetime.now() - timedelta(days=366))
-        nights_stayed = sum(stay.nights for stay in stays_last_366_days)
+        bookings_list = Booking.objects.filter(user=self.user)
+        relevant_bookings_list = bookings_list.filter(check_in_date__gte=datetime.now() - timedelta(days=366))
+        total_nights_stayed = sum(Booking.number_of_nights in relevant_bookings_list)
 
-        if nights_stayed >= 100:
+        if total_nights_stayed >= 100:
             self.membership_tier = "Diamond"
-        elif nights_stayed >= 50:
+        elif total_nights_stayed >= 50:
             self.membership_tier = "Gold"
-        elif nights_stayed >= 20:
+        elif total_nights_stayed >= 20:
             self.membership_tier = "Silver"
 
     def apply_discount(self):
@@ -38,11 +35,14 @@ class LoyaltySystem(models.Model):
         return discount_percentage
 
 
-class Stay(models.Model):
-    guest = models.ForeignKey(LoyaltySystem, on_delete=models.CASCADE, related_name='stays')
-    date = models.DateTimeField(auto_now_add=True)
-    nights = models.IntegerField(default=1)
+#class Stay(models.Model):
+    #guest = models.ForeignKey(LoyaltySystem, on_delete=models.CASCADE, related_name='stays')
+    #date = models.DateTimeField(auto_now_add=True)
+    #nights = models.IntegerField(default=1)
     
+    
+#These subclasses inherit from Loyalty System
+#They override the update_membership_tier method to provide specific behaviour for each membership tiers
 class StandardGuest(LoyaltySystem):
     def update_membership_tier(self):
         super().update_membership_tier()
