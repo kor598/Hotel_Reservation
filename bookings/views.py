@@ -1,3 +1,4 @@
+from datetime import datetime, time
 from typing import Any
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, HttpResponse
@@ -11,6 +12,8 @@ from .forms import AvailabilityForm
 from bookings.booking_functions.availability import check_availability
 from bookings.booking_functions.get_room_list import get_room_type_url_list
 from bookings.booking_functions.get_room_type import get_room_type
+from bookings.booking_functions.get_available_rooms import get_available_rooms
+from bookings.booking_functions.book_room import book_room
 
 from bookings.models import Room, Booking
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -43,14 +46,19 @@ class BookingListView(ListView):
     
 #     actual room view
 class RoomDetailView(View):
+    
     def get(self, request, *args, **kwargs):
         
-        
-        # if people type the wrong thing
+        # get room type from kwargs
         type = self.kwargs.get('type', None)
+        
+        # get the room type name from the type
         room_type_name = get_room_type(type)
         
+        # init empty form
         form = AvailabilityForm()
+        
+        # if room type is valid
         if room_type_name is not None:            
             context = {
                 'room_type': room_type_name,
@@ -60,33 +68,44 @@ class RoomDetailView(View):
         else:
             return HttpResponse('Invalid room type')
         
+        
     def post(self, request, *args, **kwargs):
         room_type = self.kwargs.get('type', None)
-        room_list = Room.objects.filter(room_type=room_type)
         form = AvailabilityForm(request.POST)
-        
+
         if form.is_valid():
             data = form.cleaned_data
+            # Convert string dates to datetime objects
+            check_in_time = data['check_in']
+            check_out_time = data['check_out']
+
+            # Set the time to 4:00 PM for both check-in and check-out
+            check_in_time = check_in_time.replace(hour=16, minute=0, second=0)
+            check_out_time = check_out_time.replace(hour=16, minute=0, second=0)
+
+            # Add some debugging print statements
+            print(check_in_time, check_out_time)
             
-            available_rooms = []
-            for room in room_list:
-                if check_availability(room, data['check_in'], data['check_out']):
-                    available_rooms.append(room)
-                
-            if len(available_rooms) > 0:        
-                room = available_rooms[0]
-                
-                booking = Booking.objects.create(
-                    user=self.request.user,  
-                    room = room,
-                    check_in = data['check_in'],
-                    check_out = data['check_out']
-                )        
-                booking.save()
-                messages.success(self.request, f'Your booking for {room} from {data["check_in"]} to {data["check_out"]} has been confirmed!! Thank you for choosing us.')
+            
+            available_rooms = get_available_rooms(room_type, check_in_time, check_out_time)
+            
+            if available_rooms is not None:
+                booking = book_room(request, available_rooms[0], check_in_time, check_out_time)
+
+                # Format datetime objects to strings for message display
+                formatted_check_in = check_in_time.strftime("%Y-%m-%d %H:%M:%S")
+                formatted_check_out = check_out_time.strftime("%Y-%m-%d %H:%M:%S")
+
+                messages.success(
+                    self.request,
+                    f'Your booking for a {room_type} room from {formatted_check_in} to {formatted_check_out} has been confirmed!! Thank you for choosing us.'
+                )
                 return HttpResponse(booking)
+            else:
+                return HttpResponse('No rooms available for the selected dates. Please try a different room or date.')
         else:
-            return HttpResponse('No rooms available for the selected dates. Please try a different room or date.')
+            # Handle form invalid case
+            return HttpResponse('Form data is not valid.')
 
 class CancelBookingView(DeleteView):
     model = Booking
