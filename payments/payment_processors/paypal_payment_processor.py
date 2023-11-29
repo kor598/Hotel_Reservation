@@ -4,12 +4,13 @@ from paypal.standard.forms import PayPalPaymentsForm
 from django.contrib import messages
 from django.urls import reverse
 from django.conf import settings
+# temporary
 import uuid
 
-
-
+# concrete strategy for PayPal
 class PaypalPaymentProcessor(PaymentStrategy):
-    def processPayment(self, request):
+
+    def process_payment(self, request):
         host = request.get_host()
 
         paypal_dict = {
@@ -26,10 +27,12 @@ class PaypalPaymentProcessor(PaymentStrategy):
         context = {'form': form}
         return render(request, 'payment.html', context)
     
-    def paypal_return(self, request):
+    def handle_success(self, request):
         messages.success(request, 'Your payment was successful')
         return redirect('process_payment', processor_type='paypal')
+    
+        print("Payment via PayPal was successful")
 
-    def paypal_cancel(self, request):
+    def handle_failure(self, request):
         messages.error(request, 'Your order has been cancelled')
         return redirect('process_payment', processor_type='paypal')
