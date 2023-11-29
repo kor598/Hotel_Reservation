@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 class PaymentStrategy(ABC):
 
     @abstractmethod
-    def processPayment(self, request):
+    def process_payment(self, request):
         pass
     
     @abstractmethod
