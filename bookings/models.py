@@ -42,7 +42,7 @@ class Room(models.Model):
         self.save()
     
 class Booking(models.Model):
-    User = models.ForeignKey(User, on_delete=models.CASCADE)  # Ensure it's referencing the correct User model
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Ensure it's referencing the correct User model
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     check_in_date = models.DateTimeField()
     check_out_date = models.DateTimeField()
