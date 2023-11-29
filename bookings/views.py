@@ -7,7 +7,11 @@ from django.shortcuts import render
 from django.views.generic import ListView, FormView, View, DeleteView
 from django.urls import reverse, reverse_lazy
 from .forms import AvailabilityForm
-from bookings.availability import check_availability
+
+from bookings.booking_functions.availability import check_availability
+from bookings.booking_functions.get_room_list import get_room_type_url_list
+from bookings.booking_functions.get_room_type import get_room_type
+
 from bookings.models import Room, Booking
 from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.models import User
@@ -16,22 +20,9 @@ from django.views.generic import DeleteView
 # Create your views here.
 
 
-# temp view to see rooms
+#  seeimg rooms
 def RoomListView(request):
-    room = Room.objects.all()[0]
-    room_types = dict(room.ROOM_TYPES)
-    print('types = ', room_types)
-    
-    room_values = room_types.values()
-    print('values = ', room_values)
-    room_list = []
-    
-    for room_type in room_types:
-        room = room_types.get(room_type)
-        room_url = reverse('bookings:RoomDetailView', kwargs={
-                            'type': room_type})
-        room_list.append((room, room_url))
-    
+    room_list = get_room_type_url_list()
     context = {
         "room_list": room_list,
     }
@@ -40,7 +31,6 @@ def RoomListView(request):
 class BookingListView(ListView):
     model = Booking
     template_name = 'booking_list_view.html'
-    #context_object_name = 'booking_list_view'
     
     def get_queryset(self, *args, **kwargs):
         if self.request.user.is_staff:
@@ -54,25 +44,21 @@ class BookingListView(ListView):
 #     actual room view
 class RoomDetailView(View):
     def get(self, request, *args, **kwargs):
-        print(self.request.user)
+        
+        
         # if people type the wrong thing
         type = self.kwargs.get('type', None)
-        form = AvailabilityForm()
-        room_list = Room.objects.filter(room_type= type)
-        # takes first room in list
+        room_type_name = get_room_type(type)
         
-        if len(room_list) > 0:
-            room = room_list[0]
-            room_type_name = dict(room.ROOM_TYPES).get(type, None)
+        form = AvailabilityForm()
+        if room_type_name is not None:            
             context = {
                 'room_type': room_type_name,
                 'form': form,
             }
             return render(request, 'room_detail_view.html', context)
         else:
-            return HttpResponse('Room no existo')
-        
-        
+            return HttpResponse('Invalid room type')
         
     def post(self, request, *args, **kwargs):
         room_type = self.kwargs.get('type', None)
