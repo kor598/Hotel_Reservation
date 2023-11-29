@@ -10,7 +10,7 @@ class Room(models.Model):
         ('FAMILY', 'Family'),
     )
 
-    status = models.CharField(
+    room_status = models.CharField(
         max_length=20,
         choices=[
             (status.value, status.name) for status in RoomStatus
@@ -45,7 +45,6 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     check_in_date = models.DateField()
     check_out_date = models.DateField()
-
     def __str__(self):
         return f'{self.user} has booked {self.room} from {self.check_in_date} to {self.check_out_date}'
     
