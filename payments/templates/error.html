@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width={device-width}, initial-scale=1.0">
-    <title>PayPal Payment</title>
+    <title>Payment Error</title>
 </head>
 <body>
-    {{ form.render }}
+    <div class="error-container">
+        <h1>Error</h1>
+        <p class="error-message">{{ error_message }}</p>
+    </div>
 </body>
 </html>
