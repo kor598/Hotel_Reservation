@@ -1,7 +1,7 @@
 from datetime import datetime, time
 from typing import Any
 from django.db.models.query import QuerySet
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.shortcuts import render
@@ -21,7 +21,15 @@ from accounts.models import User
 from django.views.generic import DeleteView
 
 # Create your views here.
+def CheckInView(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
+    room.check_in()
+    return render(request, 'check_in_success.html', {'room': room})
 
+def CheckOutView(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
+    room.check_out()
+    return render(request, 'check_out_success.html', {'room': room})
 
 #  seeimg rooms
 def RoomListView(request):
@@ -76,8 +84,8 @@ class RoomDetailView(View):
         if form.is_valid():
             data = form.cleaned_data
             # Convert string dates to datetime objects
-            check_in_time = data['check_in']
-            check_out_time = data['check_out']
+            check_in_time = data['check_in_date']
+            check_out_time = data['check_out_date']
 
             # Set the time to 4:00 PM for both check-in and check-out
             check_in_time = check_in_time.replace(hour=16, minute=0, second=0)

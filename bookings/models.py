@@ -1,9 +1,8 @@
 from django.db import models
 from django.urls import reverse_lazy
 from accounts.models import User
-
+from .room_status import RoomStatus
 # Create your models here.
-
 class Room(models.Model):
     ROOM_TYPES = (
         # key, value
@@ -11,7 +10,14 @@ class Room(models.Model):
         ('DOUBLE', 'Double'),
         ('FAMILY', 'Family'),
     )
-            
+
+    room_status = models.CharField(
+        max_length=20,
+        choices=[
+            (status.value, status.name) for status in RoomStatus
+        ],
+        default=RoomStatus.CLEANED.value,
+    )
     room_number = models.IntegerField()
     room_type = models.CharField(max_length=20, choices=ROOM_TYPES)
     room_beds = models.IntegerField()
@@ -23,15 +29,25 @@ class Room(models.Model):
     def __str__(self):
         return f'{self.room_number}: {self.room_type} with {self.room_beds} beds for {self.room_capacity} people'
     
+    def check_in(self):
+        self.status = RoomStatus.CHECKED_IN.value
+        self.save()
+
+    def check_out(self):
+        self.status = RoomStatus.CHECKED_OUT.value
+        self.save()
+
+    def clean_room(self):
+        self.status = RoomStatus.CLEANED.value
+        self.save()
     
 class Booking(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Ensure it's referencing the correct User model
+    User = models.ForeignKey(User, on_delete=models.CASCADE)  # Ensure it's referencing the correct User model
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    check_in = models.DateTimeField()
-    check_out = models.DateTimeField()
-
+    check_in_date = models.DateTimeField()
+    check_out_date = models.DateTimeField()
     def __str__(self):
-        return f'{self.user} has booked {self.room} from {self.check_in} to {self.check_out}'
+        return f'{self.user} has booked {self.room} from {self.check_in_date} to {self.check_out_date}'
     
     def get_room_type(self):
         room_types = dict(self.room.ROOM_TYPES)

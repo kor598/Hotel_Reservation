@@ -1,8 +1,7 @@
 from django.db import models
 from datetime import datetime, timedelta
-from django.contrib.auth import get_user_model
+from accounts.models import User
 
-User = get_user_model()
 
 class LoyaltySystem(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'role': User.Role.GUEST})
