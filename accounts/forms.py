@@ -18,7 +18,7 @@ class LoginForm(forms.Form):
         )
     )
 
-class RegisterForm(UserCreationForm):
+class GuestRegisterForm(UserCreationForm):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -40,7 +40,7 @@ class RegisterForm(UserCreationForm):
             }
         )
     )
-    email = forms.CharField(
+    email = forms.EmailField(
         widget=forms.TextInput(
             attrs={
                 "class": "form-control"
@@ -58,8 +58,3 @@ class RegisterForm(UserCreationForm):
         except User.DoesNotExist:
             return username
         raise forms.ValidationError('This username is already taken. Please choose another.')
-
-class EditProfileForm(UserChangeForm):
-    class Meta:
-        model = User
-        fields = ('username', 'email')
