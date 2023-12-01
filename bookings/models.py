@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse_lazy
 from django.utils import timezone
 from accounts.models import User
+from loyaltySystem.models import LoyaltySystem
 #from django.contrib.auth.models import User
 
 from django_project import settings
@@ -26,7 +27,7 @@ class Booking(models.Model):
 
     def calculate_price(self):
         nights = self.nights_of_stay()
-        room_price = self.room.price
+        room_price = self.room.room_price
         total_price = nights * room_price
         return total_price
 
@@ -38,15 +39,20 @@ class Booking(models.Model):
         return discount_percentage
 
     def calculate_points_earned(self):
+        
         nights = self.nights_of_stay()
         points_per_night = 100  # Standard tier
         # Update points based on membership tiers
+        
+        loyalty_details = LoyaltySystem.objects.get(user=self.user)
+        membership_tier = loyalty_details.membership_tier
+        
         # currently stored as user.membership_tier. CHANGE WHEN RAJAT IS DONE
-        if self.user.membership_tier == 'Silver':
+        if membership_tier == 'Silver':
             points_per_night = 110
-        elif self.user.membership_tier == 'Gold':
+        elif membership_tier == 'Gold':
             points_per_night = 125
-        elif self.user.membership_tier == 'Diamond':
+        elif membership_tier == 'Diamond':
             points_per_night = 150
         return nights * points_per_night
 
