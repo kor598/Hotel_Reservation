@@ -36,6 +36,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(email, username=username, password=password, **extra_fields)
         guests_group, _ = Group.objects.get_or_create(name='Guests')
         user.groups.add(guests_group)
+        LoyaltySystem.objects.create(user=user, name=user.username)
         return user
     
     def create_cleaner(self, email, username, password=None, **extra_fields):
