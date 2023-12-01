@@ -1,62 +1,70 @@
 from django.db import models
-from accounts.models import User
-from .room_status import RoomStatus
-# Create your models here.
-class Room(models.Model):
-    ROOM_TYPES = (
-        # key, value
-        ('SINGLE', 'Single'),
-        ('DOUBLE', 'Double'),
-        ('FAMILY', 'Family'),
-    )
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.contrib.auth.models import User
 
-    status = models.CharField(
-        max_length=20,
-        choices=[
-            (status.value, status.name) for status in RoomStatus
-        ],
-        default=RoomStatus.CLEANED.value,
-    )
-    room_number = models.IntegerField()
-    room_type = models.CharField(max_length=20, choices=ROOM_TYPES)
-    room_beds = models.IntegerField()
-    room_capacity = models.IntegerField()
-    room_price = models.IntegerField()
-    room_description = models.TextField()
-    room_image = models.ImageField(upload_to='static/images')
+from hotel.models import Room
 
-    def __str__(self):
-        return f'{self.room_number}: {self.room_type} with {self.room_beds} beds for {self.room_capacity} people'
-    
-    def check_in(self):
-        self.status = RoomStatus.CHECKED_IN.value
-        self.save()
-
-    def check_out(self):
-        self.status = RoomStatus.CHECKED_OUT.value
-        self.save()
-
-    def clean_room(self):
-        self.status = RoomStatus.CLEANED.value
-        self.save()
-    
 class Booking(models.Model):
-    User = models.ForeignKey(User, on_delete=models.CASCADE)  # Ensure it's referencing the correct User model
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    check_in_date = models.DateField()
-    check_out_date = models.DateField()
-    number_of_nights = models.IntegerField(blank=True, null=True)  # New field for storing the number of nights
+    check_in_date = models.DateTimeField()
+    check_out_date = models.DateTimeField()
 
     def __str__(self):
         return f'{self.user} has booked {self.room} from {self.check_in_date} to {self.check_out_date}'
-    
-    def calculate_nights(self):
-        # Calculate the number of nights by subtracting check_in_date from check_out_date
-        # This assumes check_out_date is always greater than or equal to check_in_date
-        return (self.check_out_date - self.check_in_date).days
 
-    def save(self, *args, **kwargs):
-        # Override the save method to calculate and save the number_of_nights
-        self.number_of_nights = self.calculate_nights()
-        super().save(*args, **kwargs)
-    
+    def get_room_type(self):
+        room_types = dict(self.room.ROOM_TYPES)
+        room_type = room_types.get(self.room.room_type)
+        return room_type
+
+    def nights_of_stay(self):
+        return (self.check_out_date - self.check_in_date).days  # Calculate nights of stay
+
+    def calculate_price(self):
+        nights = self.nights_of_stay()
+        room_price = self.room.price
+        total_price = nights * room_price
+        return total_price
+
+    def calculate_discount(self, user_points):
+        discount_percentage = 0
+        if user_points >= 1000:
+            max_discount_percentage = 50
+            discount_percentage = min((user_points // 1000) * 10, max_discount_percentage)
+        return discount_percentage
+
+    def calculate_points_earned(self):
+        nights = self.nights_of_stay()
+        points_per_night = 100  # Standard tier
+        # Update points based on membership tiers
+        # currently stored as user.membership_tier. CHANGE WHEN RAJAT IS DONE
+        if self.user.membership_tier == 'Silver':
+            points_per_night = 110
+        elif self.user.membership_tier == 'Gold':
+            points_per_night = 125
+        elif self.user.membership_tier == 'Diamond':
+            points_per_night = 150
+        return nights * points_per_night
+
+    def update_user_points(self):
+        points_earned = self.calculate_points_earned()
+        # Update user's points based on the points earned from the booking
+        self.user.points += points_earned
+        self.user.save()
+
+    def apply_discount(self):
+        user_points = self.user.points
+        discount_percentage = self.calculate_discount(user_points)
+        price = self.calculate_price()
+
+        # Apply discount if applicable
+        if discount_percentage > 0:
+            discount_amount = (discount_percentage / 100) * price
+            discounted_price = price - discount_amount
+            return discounted_price
+        return price
+
+    def get_cancel_booking_url(self):
+        return reverse_lazy('bookings:CancelBookingView', args=[self.pk])

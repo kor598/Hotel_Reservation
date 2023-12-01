@@ -1,8 +1,8 @@
+from ctypes.wintypes import HINSTANCE
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-####Managers##########################################
 
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, **extra_fields):
@@ -11,91 +11,41 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
+        default_group, _ = Group.objects.get_or_create(name='Default')
         user.save(using=self._db)
+        user.groups.add(default_group)
         return user
     
-class GuestManager(BaseUserManager):
-    def get_queryset(self, *args, **kwargs):
-        results = super().get_queryset(*args, **kwargs)
-        return results.filter(role=User.Role.GUEST)
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        user = self.create_user(email, password=password, **extra_fields)  # Specify password parameter
+        supers_group, _ = Group.objects.get_or_create(name='Supers')
+        user.groups.add(supers_group)
+        return user
     
-class StaffManager(BaseUserManager):
-    def get_queryset(self, *args, **kwargs):
-        results = super().get_queryset(*args, **kwargs)
-        return results.filter(role=User.Role.STAFF)
+    def create_admin(self, email,username, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', False)
+        user = self.create_user(email, username=username, password=password, **extra_fields)
+        admins_group, _ = Group.objects.get_or_create(name='Admin')
+        user.groups.add(admins_group)
+        return user
 
-###################Defining abstract user and roles
+    def create_guest(self, email, username, password=None, **extra_fields):
+        # Create a guest user and assign them to the 'Guests' group
+        from loyaltySystem.models import LoyaltySystem
+        user = self.create_user(email, username=username, password=password, **extra_fields)
+        guests_group, _ = Group.objects.get_or_create(name='Guests')
+        user.groups.add(guests_group)
+        LoyaltySystem.objects.create(user=HINSTANCE,  membership_tier='Standard', total_points=0)
+        return user
+    
+    def create_cleaner(self, email, username, password=None, **extra_fields):
+        user = self.create_user(email, username=username, password=password, **extra_fields)
+        cleaner_group, _ = Group.objects.get_or_create(name='Cleaners')
+        user.groups.add(cleaner_group)
+        return user
+
 class User(AbstractUser):
-    class Role(models.TextChoices):
-        ADMIN = "ADMIN", "Admin"
-        GUEST = "GUEST", "Guest"
-        STAFF = "STAFF", "Staff"
-    role = models.CharField(max_length=50, choices=Role.choices)
-
-    def save(self, *args, **kwargs):
-        if not self.pk:  # Checking if it's a new record
-            self.role = User.Role.GUEST  # Set default role as Guest
-        super().save(*args, **kwargs)
-
-    def normalize_email(self, email):
-        """
-        Normalize the email address by lowercasing the domain part of it.
-        """
-        email_parts = email.split('@')
-        email_parts[-1] = email_parts[-1].lower()
-        return '@'.join(email_parts)
-    
-    objects = UserManager() 
-
-####User role classes#################
-class Guest(User):
-
-    base_role = User.Role.GUEST
-
-    Guest = GuestManager()
-
-    class Meta:
-        proxy = True
-
-    def welcome(self):
-        return "Only for guests"
-
-
-@receiver(post_save, sender=Guest)
-def create_guest_profile(sender, instance, created, **kwargs):
-    if created and instance.role == User.Role.GUEST:
-        GuestProfile.objects.create(user=instance)
-
-#add additional fields here
-class GuestProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    guest_id = models.IntegerField(null=True, blank=True)
-    # firstname = models.CharField(max_length=255)
-    # lastname = models.CharField(max_length=255)
-
-class Staff(User):
-
-    base_role = User.Role.STAFF
-
-    staff = StaffManager()
-
-    class Meta:
-        proxy = True
-
-    def welcome(self):
-        return "Only for staff"
-
-class StaffProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    staff_id = models.IntegerField(null=True, blank=True)
-
-@receiver(post_save, sender=Guest)
-def create_loyalty_system(sender, instance, created, **kwargs):
-    from loyaltySystem.models import LoyaltySystem
-    if created and instance.role == User.Role.GUEST:
-        LoyaltySystem.objects.create(user=instance, total_points=0, membership_tier='Standard')
-        
-@receiver(post_save, sender=Staff)
-def create_staff_profile(sender, instance, created, **kwargs):
-    if created and instance.role == User.Role.STAFF:
-        StaffProfile.objects.create(user=instance)
+    objects = UserManager()
