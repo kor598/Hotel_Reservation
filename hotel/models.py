@@ -1,10 +1,28 @@
 from django.db import models
+
 from hotel.room_status import RoomStatus
 
-# Create your models here.
+
+class Hotel(models.Model):
+    name = models.CharField(max_length=100)
+    address = models.CharField(max_length=255)
+    number_of_rooms = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.name
+
+'''
+To stop circular dependency, we can use the string 'Room' instead of the Room class
+'''
+class HotelRoom(models.Model):
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    room = models.ForeignKey('Room', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.hotel.name} - Room {self.room.room_number}"
+
 class Room(models.Model):
     ROOM_TYPES = (
-        # key, value
         ('SINGLE', 'Single'),
         ('DOUBLE', 'Double'),
         ('FAMILY', 'Family'),
@@ -12,6 +30,7 @@ class Room(models.Model):
 
     room_status = models.CharField(
         max_length=20,
+        # Assuming RoomStatus is defined somewhere else
         choices=[
             (status.value, status.name) for status in RoomStatus
         ],
@@ -24,6 +43,7 @@ class Room(models.Model):
     room_price = models.IntegerField()
     room_description = models.TextField()
     room_image = models.ImageField(upload_to='static/images')
+    hotel = models.ForeignKey(Hotel, related_name='rooms', on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         return f'{self.room_number}: {self.room_type} with {self.room_beds} beds for {self.room_capacity} people'
@@ -39,3 +59,4 @@ class Room(models.Model):
     def clean_room(self):
         self.status = RoomStatus.CLEANED.value
         self.save()
+        
