@@ -1,12 +1,13 @@
 from django.db import models
 from django.urls import reverse_lazy
 from accounts.models import User
+from django_project import settings
 from hotel.models import Room
 
 # Create your models here.
     
 class Booking(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Ensure it's referencing the correct User model
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) # Ensure it's referencing the correct User model
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     check_in_date = models.DateTimeField()
     check_out_date = models.DateTimeField()

@@ -1,3 +1,4 @@
+import logging
 from django.db import models
 
 from hotel.room_status import RoomStatus
@@ -49,14 +50,20 @@ class Room(models.Model):
         return f'{self.room_number}: {self.room_type} with {self.room_beds} beds for {self.room_capacity} people'
     
     def check_in(self):
-        self.status = RoomStatus.CHECKED_IN.value
+        self.room_status = RoomStatus.CHECKED_IN.value
         self.save()
+        logger = logging.getLogger(__name__)
+        logger.info(f"Room {self.room_number} checked in successfully")
 
     def check_out(self):
-        self.status = RoomStatus.CHECKED_OUT.value
+        self.room_status = RoomStatus.CHECKED_OUT.value
         self.save()
+        logger = logging.getLogger(__name__)
+        logger.info(f"Room {self.room_number} checked out successfully")
 
     def clean_room(self):
-        self.status = RoomStatus.CLEANED.value
+        self.room_status = RoomStatus.CLEANED.value
         self.save()
+        logger = logging.getLogger(__name__)
+        logger.info(f"Room {self.room_number} is clean!")
         
