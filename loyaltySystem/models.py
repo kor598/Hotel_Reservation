@@ -4,7 +4,7 @@ from accounts.models import User
 
 
 class LoyaltySystem(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'role': User.Role.GUEST})
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     total_points = models.IntegerField(default=0)
     membership_tier = models.CharField(max_length=50, default="Standard")
@@ -32,16 +32,6 @@ class LoyaltySystem(models.Model):
             self.membership_tier = "Gold"
         elif nights_stayed >= 20:
             self.membership_tier = "Silver"
-
-    def apply_discount(self):
-        discount_percentage = min(self.total_points // 1000 * 10, 50)
-        return discount_percentage
-
-
-class Stay(models.Model):
-    guest = models.ForeignKey(LoyaltySystem, on_delete=models.CASCADE, related_name='stays')
-    date = models.DateTimeField(auto_now_add=True)
-    nights = models.IntegerField(default=1)
     
 class StandardGuest(LoyaltySystem):
     def update_membership_tier(self):

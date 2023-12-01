@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'bookings',
     'hotel',
+    'loyaltySystem',
     #'accounts',
 ]
 

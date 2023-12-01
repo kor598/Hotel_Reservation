@@ -46,3 +46,9 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     objects = UserManager()
+    
+from loyaltySystem.models import LoyaltySystem, StandardGuest, SilverGuest, GoldGuest, DiamondGuest
+@receiver(post_save, sender=User)
+def create_loyalty_system(sender, instance, created, **kwargs):
+    if created and instance.groups.filter(name='Guests').exists():
+        LoyaltySystem.objects.create(user=instance, name=instance.username)
