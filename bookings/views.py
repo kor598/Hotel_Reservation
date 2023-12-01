@@ -111,17 +111,39 @@ class RoomDetailView(View):
                     'room_type': room_type,
                     'check_in': formatted_check_in,
                     'check_out': formatted_check_out,
+                    'nights_stay': booking.nights_of_stay(),
+                    'total_price': booking.calculate_price(),
+                    'points_earned': booking.calculate_points_earned(),
                 }
 
                 messages.success(
                     self.request,
                     f'Your booking for a {room_type} room from {formatted_check_in} to {formatted_check_out} has been confirmed! Thank you for choosing us.'
                 )
-                return render(request, 'booked_room_success.html', context)
+                return render(request, 'booking_confirmation.html', context)
             else:
                 return HttpResponse('No rooms available for the selected dates. Please try a different room or date.')
         else:
             return HttpResponse('Form data is not valid.')
+        
+        
+class BookingConfirmationView(View):
+    def get(self, request, room_id):
+        booking = Booking.objects.get(pk=room_id)
+
+        context = {
+            'room_type': booking.get_room_type(),
+            'check_in': booking.check_in_date,
+            'check_out': booking.check_out_date,
+            'nights_stay': booking.nights_of_stay(),
+            'total_price': booking.calculate_price(),
+            'points_earned': booking.calculate_points_earned(),
+        }
+        
+        print(context)
+        print(booking.__dict__)
+
+        return render(request, 'booking_confirmation.html', context)
 
 class CancelBookingView(DeleteView):
     model = Booking
