@@ -1,6 +1,5 @@
-from django.urls import path, include
-from . import views
-from .views import RoomDetailView, BookingListView, CancelBookingView, CheckInView
+from django.urls import path 
+from .views import RoomDetailView, BookingListView, CancelBookingView, CheckInView, CheckOutView
 
 app_name="bookings"
 
@@ -10,4 +9,5 @@ urlpatterns = [
     path('room/<type>/', RoomDetailView.as_view(), name="RoomDetailView"),
     path('booking/cancel/<pk>/', CancelBookingView.as_view(), name="CancelBookingView"),
     path('booking/check_in/<int:room_id>/', CheckInView.as_view(), name="CheckInView"),
+    path('booking/check_out/<int:room_id>/', CheckOutView.as_view(), name="CheckOutView"),
 ]

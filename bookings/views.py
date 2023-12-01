@@ -31,10 +31,16 @@ class CheckInView(View):
         room.save()
         return render(request, 'check_in_success.html', {'room': room})
 
-def CheckOutView(request, room_id):
-    room = get_object_or_404(Room, id=room_id)
-    room.check_out()
-    return render(request, 'check_out_success.html', {'room': room})
+class CheckOutView(View):
+    def get(self, request, room_id):
+        room = get_object_or_404(Room, id=room_id)
+        return render(request, 'check_out_success.html', {'room': room})
+    
+    def post(self, request, room_id):
+        room = get_object_or_404(Room, id=room_id)
+        room.check_out() 
+        room.save()
+        return render(request, 'check_out_success.html', {'room': room})
 
 class BookingListView(ListView):
     model = Booking

@@ -54,6 +54,10 @@
                         {% csrf_token %}
                         <button type="submit">Check-in</button>
                     </form>
+                    <form action="{% url 'bookings:CheckOutView' room_id=booking.room_id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Check-out</button>
+                    </form>
                     <div class="cancel">
                         <a href="{% url 'bookings:CancelBookingView' pk=booking.pk %}" class="invisible">
                             <i class="far fa-2x fa-times-zcircle"> Cancel Booking</i>
