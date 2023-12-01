@@ -1,6 +1,6 @@
 import logging
 from django.db import models
-
+from loyaltySystem.models import LoyaltySystem
 from hotel.room_status import RoomStatus
 
 
@@ -50,8 +50,15 @@ class Room(models.Model):
         return f'{self.room_number}: {self.room_type} with {self.room_beds} beds for {self.room_capacity} people'
     
     def check_in(self):
+        from bookings.models import Booking
+        booking_details = Booking.objects.get(room_id = self.id)
+
         self.room_status = RoomStatus.CHECKED_IN.value
         self.save()
+        
+        loyalty_details = LoyaltySystem.objects.get(user=self.user)
+        membership_tier = loyalty_details.membership_tier
+        
         logger = logging.getLogger(__name__)
         logger.info(f"Room {self.room_number} checked in successfully")
 
