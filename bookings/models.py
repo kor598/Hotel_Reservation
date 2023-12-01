@@ -4,10 +4,11 @@ from django.utils import timezone
 from accounts.models import User
 #from django.contrib.auth.models import User
 
+from django_project import settings
 from hotel.models import Room
 
 class Booking(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) # Ensure it's referencing the correct User model
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     check_in_date = models.DateTimeField()
     check_out_date = models.DateTimeField()

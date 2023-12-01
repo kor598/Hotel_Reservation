@@ -20,15 +20,19 @@
             <div class="home">
                 <!-- Div 1: Back to Home -->
                 <div class="home">
+                    {% csrf_token %}
                     <a href="{% url 'accounts:guestpls' %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
                 </div>
             </div>
 
         </div>
+        <div class="bookings">
+            {% csrf_token %}
             {% for booking in booking_list %}
             <div class="booking">
-                <img src="https://images.unsplash.com/photo-1560067174-c5a3a8f37060?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
-                    alt="">
+                <div class="image">
+                    <img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60">
+                </div>
                 <div class="category">
                     <h2>{{booking.get_room_type}} Suite</h2>
                 </div>
@@ -44,11 +48,24 @@
                 <div class="capacity">
                     <h3>Capacity: {{booking.room.room_capacity}}</h3>
                 </div>
-                <div class="cancel"><a href="{% url 'bookings:CancelBookingView' pk=booking.pk %}" class="invisible"><i
-                            class="far fa-2x fa-times-zcircle"> Cancel Booking</i></a></div>
+                <div class="actions">
+                    <!-- Check-in button -->
+                    <form action="{% url 'bookings:CheckInView' room_id=booking.room_id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Check-in</button>
+                    </form>
+                    <form action="{% url 'bookings:CheckOutView' room_id=booking.room_id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Check-out</button>
+                    </form>
+                    <div class="cancel">
+                        <a href="{% url 'bookings:CancelBookingView' pk=booking.pk %}" class="invisible">
+                            <i class="far fa-2x fa-times-zcircle"> Cancel Booking</i>
+                        </a>
+                    </div>
+                </div>
             </div>
             {% endfor %}
-
         </div>
 </body>
 
