@@ -73,13 +73,13 @@ h1,h2{
 .booking a i{
     font-size: 1.1rem;
     visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s, opacity 0.5s linear;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
 }
 
 .booking:hover .cancel a i,.cancel a i:hover{
     visibility: visible;
-  opacity: 1;
+    opacity: 1;
 }
 .cancel a i:hover{
     color: rgb(206, 43, 43);

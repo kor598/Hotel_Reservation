@@ -1,6 +1,7 @@
 from ctypes.wintypes import HINSTANCE
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager, Group
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -12,7 +13,9 @@ class UserManager(BaseUserManager):
         user = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
         default_group, _ = Group.objects.get_or_create(name='Default')
+        default_group, _ = Group.objects.get_or_create(name='Default')
         user.save(using=self._db)
+        user.groups.add(default_group)
         user.groups.add(default_group)
         return user
     
@@ -48,4 +51,5 @@ class UserManager(BaseUserManager):
         return user
 
 class User(AbstractUser):
+    objects = UserManager()
     objects = UserManager()

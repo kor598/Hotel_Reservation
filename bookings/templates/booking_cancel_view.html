@@ -9,7 +9,7 @@
     <script src="https://kit.fontawesome.com/692189991f.js" crossorigin="anonymous"></script>
 
     <!-- Main StyleSheet -->
-    <link rel="stylesheet" href="{% static 'css/room_detail_view.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/room_detail_view.css' %}">
 
 </head>
 
@@ -34,7 +34,7 @@
 
             <!-- Div 2: Room Information -->
             <div class="room-info">
-                <h1>{{room_type}}</h1>
+                <h1>{{room_category}}</h1>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Id optio rem saepe culpa architecto tempora
                     numquam debitis reiciendis! Quaerat laudantium consequuntur doloribus quod placeat consectetur
                     veniam,
@@ -45,22 +45,11 @@
             <form id="booking-form" action="" method="POST">
 
                 {% csrf_token %}
-
+                <h2>Are you sure you want to cancel this booking? Details-</h2>
+                <h3>{{booking.room.number}}{{booking.get_room_category}} {{booking}}</h3>
                 <!-- Input Div -->
                 <div class="input-div">
-                    <label for="id_check_in_date">Check In : </label>
-                    <input type="date" id="id_check_in_date" name="check_in_date">
-                </div>
-
-                <!-- Input Div -->
-                <div class="input-div">
-                    <label for="id_check_out_date">Check Out : </label>
-                    <input type="date" id="id_check_out_date" name="check_out_date">
-                </div>
-
-                <!-- Input Div -->
-                <div class="input-div">
-                    <button type="submit">Book the Room</button>
+                    <button type="submit">Cancel the Booking</button>
                 </div>
 
             </form>

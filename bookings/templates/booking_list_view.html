@@ -20,38 +20,35 @@
             <div class="home">
                 <!-- Div 1: Back to Home -->
                 <div class="home">
-                    <a href="{% url 'accounts:guest' %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
+                    <a href="{% url 'accounts:guestpls' %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
                 </div>
             </div>
 
         </div>
-
-        <div class="bookings">
             {% for booking in booking_list %}
             <div class="booking">
                 <img src="https://images.unsplash.com/photo-1560067174-c5a3a8f37060?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
                     alt="">
                 <div class="category">
-                    <h2>{{booking.get_room_category}} Suite</h2>
+                    <h2>{{booking.get_room_type}} Suite</h2>
                 </div>
                 <div class="from">
-                    <h3>From: {{booking.check_in}}</h3>
+                    <h3>From: {{booking.check_in_date}}</h3>
                 </div>
                 <div class="to">
-                    <h3>To: {{booking.check_out}}</h3>
+                    <h3>To: {{booking.check_out_date}}</h3>
                 </div>
                 <div class="beds">
-                    <h3>Beds: {{booking.room.beds}}</h3>
+                    <h3>Beds: {{booking.room.room_beds}}</h3>
                 </div>
                 <div class="capacity">
-                    <h3>Capacity: {{booking.room.capacity}}</h3>
+                    <h3>Capacity: {{booking.room.room_capacity}}</h3>
                 </div>
-                <div class="cancel"><a href="{{booking.get_cancel_booking_url}}" class="invisible"><i
-                            class="far fa-2x fa-times-circle"> Cancel
-                            Booking</i></a></div>
-
+                <div class="cancel"><a href="{% url 'bookings:CancelBookingView' pk=booking.pk %}" class="invisible"><i
+                            class="far fa-2x fa-times-zcircle"> Cancel Booking</i></a></div>
             </div>
             {% endfor %}
+
         </div>
 </body>
 
