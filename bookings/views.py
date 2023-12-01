@@ -10,14 +10,14 @@ from django.urls import reverse, reverse_lazy
 from .forms import AvailabilityForm
 
 from bookings.booking_functions.availability import check_availability
-from bookings.booking_functions.get_room_list import get_room_type_url_list
-from bookings.booking_functions.get_room_type import get_room_type
 from bookings.booking_functions.get_available_rooms import get_available_rooms
 from bookings.booking_functions.book_room import book_room
 
-from bookings.models import Room, Booking
-from django.contrib.auth.mixins import LoginRequiredMixin
-from accounts.models import User
+from hotel.room_functions.get_room_type import get_room_type
+
+from bookings.models import Booking
+from hotel.models import Room
+
 from django.views.generic import DeleteView
 
 # Create your views here.
@@ -31,13 +31,7 @@ def CheckOutView(request, room_id):
     room.check_out()
     return render(request, 'check_out_success.html', {'room': room})
 
-#  seeimg rooms
-def RoomListView(request):
-    room_list = get_room_type_url_list()
-    context = {
-        "room_list": room_list,
-    }
-    return render(request, 'room_list_view.html', context)
+
 
 class BookingListView(ListView):
     model = Booking

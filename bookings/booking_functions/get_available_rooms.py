@@ -1,5 +1,5 @@
 from bookings.booking_functions.availability import check_availability
-from bookings.models import Room
+from hotel.models import Room
 
 # takes in a type and returns a list of rooms
 def get_available_rooms(room_type, check_in_date, check_out_date):

@@ -1,4 +1,4 @@
-from bookings.models import Room
+from hotel.models import Room
 
 
 def get_room_type(type):

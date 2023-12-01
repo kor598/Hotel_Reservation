@@ -1,4 +1,5 @@
-from bookings.models import Booking, Room
+from bookings.models import Booking
+from hotel.models import Room
 
 def book_room(request, room, check_in_date, check_out_date):
     try:

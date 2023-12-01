@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #User created
     'accounts.apps.AccountsConfig',
     'bookings',
+    'hotel',
     #'accounts',
 ]
 
@@ -129,6 +130,7 @@ STATIC_ROOT = 'static/root/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'bookings' / 'static',
+    BASE_DIR / 'hotel' / 'static',
 ]
 
 # Default primary key field type
