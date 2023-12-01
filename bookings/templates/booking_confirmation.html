@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="confirmation">
+        <h1>Booking Confirmation</h1>
+        <p>Your booking for a {{ room_type }} room has been confirmed!</p>
+        <p>Check-in: {{ check_in }}</p>
+        <p>Check-out: {{ check_out }}</p>
+        <p>Nights staying: {{ nights_stay }}</p>
+        <p>Total Price: {{ total_price }}</p>
+        <p>Points earned: {{ points_earned }}</p>
+    </div>
+    
+    <div class="home">
+        <a href="{% url 'bookings:BookingListView' %}"><i class="fas fa-arrow-alt-circle-left"></i>Home</a>
+    </div>
+</body>
+</html>
