@@ -6,7 +6,6 @@ from paypal.standard.forms import PayPalPaymentsForm
 from django.urls import reverse
 from django.shortcuts import render, redirect
 
-
 # concrete strategy for PayPal
 class PaypalPaymentProcessor(PaymentStrategy, View):
 
@@ -15,13 +14,13 @@ class PaypalPaymentProcessor(PaymentStrategy, View):
 
         paypal_dict = {
             'business': settings.PAYPAL_RECEIVER_EMAIL,
-            'amount': str(booking.total_amount),  # Replace with the dynamic total amount
-            'item_name': f'Booking #{booking.id}',  # Replace with dynamic booking details
+            'amount': str(booking.total_price),  # replace with actual amount
+            'item_name': f'Booking {booking.id}',  # replace with relevant information
             'invoice': str(uuid.uuid4()),
             'currency_code': 'USD',
-            'notify_url': f'http://{host}{reverse("paypal-ipn")}',
-            'return_url': f'http://{host}{reverse("paypal-return")}',
-            'cancel_return': f'http://{host}{reverse("paypal-cancel")}',
+            'notify_url': request.build_absolute_uri(reverse('paypal-ipn')),
+            'return_url': request.build_absolute_uri(reverse('payment_success')),
+            'cancel_return': request.build_absolute_uri(reverse('payment_failure')),
         }
 
         form = PayPalPaymentsForm(initial=paypal_dict)
