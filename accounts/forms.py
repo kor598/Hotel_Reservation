@@ -18,7 +18,7 @@ class LoginForm(forms.Form):
         )
     )
 
-class RegisterForm(UserCreationForm):
+class GuestRegisterForm(UserCreationForm):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -40,15 +40,21 @@ class RegisterForm(UserCreationForm):
             }
         )
     )
-    email = forms.CharField(
+    email = forms.EmailField(
         widget=forms.TextInput(
             attrs={
                 "class": "form-control"
             }
         )
     )
-
-class EditProfileForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ('username', 'email')
+        fields = ['username', 'email', 'password1', 'password2']
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        try:
+            User.objects.get(username__iexact=username)  # Use your custom user model's manager
+        except User.DoesNotExist:
+            return username
+        raise forms.ValidationError('This username is already taken. Please choose another.')

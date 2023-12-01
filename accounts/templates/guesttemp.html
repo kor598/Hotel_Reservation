@@ -1,0 +1,15 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>guest page</title>
+</head>
+<body>
+    {% csrf_token %}
+    <h1> hello {{ user.username }} you are a guest</h1>
+    <a href="{% url 'hotel:RoomListView' %}">Book a room!</a>
+    <a href="{% url 'bookings:BookingListView' %}">My bookings</a>
+</body>
+</html>

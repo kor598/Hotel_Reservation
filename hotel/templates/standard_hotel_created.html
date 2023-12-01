@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Standard Hotel Created</title>
+</head>
+<body>
+    <h1>Standard Hotel: {{ existing_hotel.name }}</h1>
+    
+    <h2>Hotel Information</h2>
+    <p><strong>Address:</strong> {{ existing_hotel.address }}</p>
+    <p><strong>Number of Rooms:</strong> {{ existing_hotel.number_of_rooms }}</p>
+    <!-- Add more hotel information as needed -->
+
+    <h2>Rooms</h2>
+    <ul>
+        {% for room in created_rooms %}
+            <li>
+                Room {{ room.room_number }} - Type: {{ room.room_type }} - Beds: {{ room.room_beds }} - Capacity: {{ room.room_capacity }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
