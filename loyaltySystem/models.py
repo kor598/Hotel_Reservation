@@ -2,6 +2,8 @@ from django.db import models
 from datetime import datetime, timedelta
 from accounts.models import User
 
+class LoyaltySystemManager(models.Manager):
+    pass
 
 class LoyaltySystem(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -9,9 +11,8 @@ class LoyaltySystem(models.Model):
     total_points = models.IntegerField(default=0)
     membership_tier = models.CharField(max_length=50, default="Standard")
     last_checkin_date = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        abstract = True
+    
+    objects = LoyaltySystemManager() 
 
     def calculate_points(self, nights):
         loyalty_points = {
@@ -34,6 +35,8 @@ class LoyaltySystem(models.Model):
             self.membership_tier = "Silver"
     
 class StandardGuest(LoyaltySystem):
+    loyaltysystem_ptr = models.OneToOneField(LoyaltySystem, on_delete=models.CASCADE, parent_link=True, default=0)
+
     def update_membership_tier(self):
         super().update_membership_tier()
         stays_last_366_days = self.stays.filter(date__gte=datetime.now() - timedelta(days=366))
@@ -41,6 +44,8 @@ class StandardGuest(LoyaltySystem):
             self.membership_tier = "Standard"
 
 class SilverGuest(LoyaltySystem):
+    loyaltysystem_ptr = models.OneToOneField(LoyaltySystem, on_delete=models.CASCADE, parent_link=True, default=0)
+
     def update_membership_tier(self):
         super().update_membership_tier()
         stays_last_366_days = self.stays.filter(date__gte=datetime.now() - timedelta(days=366))
@@ -48,6 +53,8 @@ class SilverGuest(LoyaltySystem):
             self.membership_tier = "Silver"
             
 class GoldGuest(LoyaltySystem):
+    loyaltysystem_ptr = models.OneToOneField(LoyaltySystem, on_delete=models.CASCADE, parent_link=True, default=0)
+
     def update_membership_tier(self):
         super().update_membership_tier()
         stays_last_366_days = self.stays.filter(date__gte=datetime.now() - timedelta(days=366))
@@ -55,6 +62,7 @@ class GoldGuest(LoyaltySystem):
             self.membership_tier = "Gold"
 
 class DiamondGuest(LoyaltySystem):
+    loyaltysystem_ptr = models.OneToOneField(LoyaltySystem, on_delete=models.CASCADE, parent_link=True, default=0)
     def update_membership_tier(self):
         super().update_membership_tier()
         stays_last_366_days = self.stays.filter(date__gte=datetime.now() - timedelta(days=366))
