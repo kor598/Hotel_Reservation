@@ -1,4 +1,5 @@
 from datetime import datetime, time
+from django.utils import timezone
 from typing import Any
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
@@ -96,6 +97,12 @@ class RoomDetailView(View):
 
             # Add some debugging print statements
             print(check_in_time, check_out_time)
+            
+            if check_in_time.date() < timezone.now().date():
+                return HttpResponse('Check-in date cannot be in the past.')
+
+            if check_out_time <= check_in_time:
+                return HttpResponse('Check-out date should be after the check-in date.')
             
             
             available_rooms = get_available_rooms(room_type, check_in_time, check_out_time)
