@@ -26,18 +26,13 @@ SECRET_KEY = 'django-insecure-91d3fnnbg471h#n0xkwc(46#r#9%f7a=4l+rrhux0a+-227-+_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    
-]
-
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'paypal.standard.ipn',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +42,7 @@ INSTALLED_APPS = [
     #User created
     'accounts.apps.AccountsConfig',
     'bookings',
+    'payments',
     'hotel',
     'loyaltySystem',
     #'accounts',
@@ -144,3 +140,9 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Paypal settings
+
+PAYPAL_TEST = True
+
+PAYPAL_RECEIVER_EMAIL = 'sb-mkmce15132462@business.example.com'
