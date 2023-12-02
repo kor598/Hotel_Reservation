@@ -1,8 +1,8 @@
+from datetime import date
 import logging
 from django.db import models
-
+from loyaltySystem.models import LoyaltySystem
 from hotel.room_status import RoomStatus
-
 
 class Hotel(models.Model):
     name = models.CharField(max_length=100)
@@ -50,10 +50,40 @@ class Room(models.Model):
         return f'{self.room_number}: {self.room_type} with {self.room_beds} beds for {self.room_capacity} people'
     
     def check_in(self):
-        self.room_status = RoomStatus.CHECKED_IN.value
-        self.save()
-        logger = logging.getLogger(__name__)
-        logger.info(f"Room {self.room_number} checked in successfully")
+        from bookings.models import Booking  # Import here to break the circular dependency
+
+        today = date.today()
+
+        # Get all bookings for this room
+        room_bookings = Booking.objects.filter(room_id=self.id)
+
+        # Filter bookings that have the check-in date as today
+        relevant_booking = None
+        for booking in room_bookings:
+            if booking.check_in_date.date() == today:
+                relevant_booking = booking
+                break  # Found the relevant booking, exit the loop
+
+        if relevant_booking:
+            relevant_booking.calculate_points_earned()
+
+            user = relevant_booking.user
+            loyalty_system = LoyaltySystem.objects.get(user=user)
+
+            loyalty_system.total_points += relevant_booking.points_earned
+            loyalty_system.save()
+
+            self.room_status = RoomStatus.CHECKED_IN.value
+            self.save()
+
+            logger = logging.getLogger(__name__)
+            logger.info(f"Room {self.room_number} checked in successfully")
+
+            return relevant_booking.points_earned
+        else:
+            logger = logging.getLogger(__name__)
+            logger.error(f"No booking found for today for Room {self.room_number}")
+            return None  
 
     def check_out(self):
         self.room_status = RoomStatus.CHECKED_OUT.value

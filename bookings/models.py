@@ -1,7 +1,6 @@
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils import timezone
-from accounts.models import User
 from loyaltySystem.models import LoyaltySystem
 #from django.contrib.auth.models import User
 
@@ -13,8 +12,24 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     check_in_date = models.DateTimeField()
     check_out_date = models.DateTimeField()
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    points_earned = models.IntegerField(default=0)
+    
+    
+    class PaymentStatus(models.TextChoices):
+        PENDING = 'Pending', 'Pending'
+        PAID = 'Paid', 'Paid'
+        FAILED = 'Failed', 'Failed'
+        REFUNDED = 'Refunded', 'Refunded'
 
-    def __str__(self):
+    payment_status = models.CharField(
+        max_length=20,
+        choices=PaymentStatus.choices,
+        default=PaymentStatus.PENDING
+    )
+    
+
+    def _str_(self):
         return f'{self.user} has booked {self.room} from {self.check_in_date} to {self.check_out_date}'
 
     def get_room_type(self):
@@ -29,6 +44,10 @@ class Booking(models.Model):
         nights = self.nights_of_stay()
         room_price = self.room.room_price
         total_price = nights * room_price
+        
+        self.total_price = total_price
+        self.save()
+        
         return total_price
 
     def calculate_discount(self, user_points):
@@ -54,25 +73,46 @@ class Booking(models.Model):
             points_per_night = 125
         elif membership_tier == 'Diamond':
             points_per_night = 150
+        self.points_earned = nights * points_per_night  
+        self.save()  
         return nights * points_per_night
 
     def update_user_points(self):
+        loyalty_details = LoyaltySystem.objects.get(user=self.user)
         points_earned = self.calculate_points_earned()
         # Update user's points based on the points earned from the booking
-        self.user.points += points_earned
-        self.user.save()
+        loyalty_details.total_points += points_earned
+        loyalty_details.save()
 
     def apply_discount(self):
-        user_points = self.user.points
+        loyalty_details = LoyaltySystem.objects.get(user=self.user)
+        user_points = loyalty_details.total_points
         discount_percentage = self.calculate_discount(user_points)
         price = self.calculate_price()
+        points_to_minus = discount_percentage * 100 
+        
 
         # Apply discount if applicable
         if discount_percentage > 0:
             discount_amount = (discount_percentage / 100) * price
             discounted_price = price - discount_amount
-            return discounted_price
-        return price
+            price = discounted_price
 
+        return price
+    
+    def calculate_points_deducted(self):
+        loyalty_details = LoyaltySystem.objects.get(user=self.user)
+        user_points = loyalty_details.total_points
+        discount_percentage = self.calculate_discount(user_points)
+        points_to_minus = discount_percentage * 100
+        loyalty_details.total_points -= points_to_minus
+        loyalty_details.save()
+        return points_to_minus
+        
     def get_cancel_booking_url(self):
         return reverse_lazy('bookings:CancelBookingView', args=[self.pk])
+    
+    def update_payment_status(self, new_status):
+        # Method to update the payment status
+        self.payment_status = new_status
+        self.save()
