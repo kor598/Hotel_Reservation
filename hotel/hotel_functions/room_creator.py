@@ -3,7 +3,7 @@ from hotel.room_factory import RoomFactory
 
 def create_rooms_for_standard_hotel(hotel_name, num_rooms):
     # Calculate the distribution of rooms among different types
-    num_single = num_rooms // 3  # Dividing among single, double, and family rooms equally
+    num_single = num_rooms // 3  # Dividing among single, double, and family rooms equally, or as equally as possible
     num_double = num_rooms // 3
     num_family = num_rooms - (num_single + num_double)
 
@@ -22,7 +22,7 @@ def create_rooms_for_standard_hotel(hotel_name, num_rooms):
         # Create rooms for the hotel
         for i in range(num_single):
             room = RoomFactory.create_single_room(
-                room_number=f'1{i + 1}',
+                room_number=f'1{i + 1}', # room numbers for single all start with 1
                 room_beds=1,
                 room_capacity=1,
                 room_price=100,
@@ -56,6 +56,6 @@ def create_rooms_for_standard_hotel(hotel_name, num_rooms):
             )
             created_rooms.append(room)
 
-        return created_rooms
+        return created_rooms # Success, returning the created rooms
 
     return None
