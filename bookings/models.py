@@ -1,7 +1,6 @@
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils import timezone
-from accounts.models import User
 from loyaltySystem.models import LoyaltySystem
 #from django.contrib.auth.models import User
 
@@ -14,6 +13,7 @@ class Booking(models.Model):
     check_in_date = models.DateTimeField()
     check_out_date = models.DateTimeField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    points_earned = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.user} has booked {self.room} from {self.check_in_date} to {self.check_out_date}'
@@ -55,13 +55,16 @@ class Booking(models.Model):
             points_per_night = 125
         elif membership_tier == 'Diamond':
             points_per_night = 150
+        self.points_earned = nights * points_per_night  
+        self.save()  
         return nights * points_per_night
 
     def update_user_points(self):
+        loyalty_details = LoyaltySystem.objects.get(user=self.user)
         points_earned = self.calculate_points_earned()
         # Update user's points based on the points earned from the booking
-        self.user.points += points_earned
-        self.user.save()
+        loyalty_details.total_points += points_earned
+        loyalty_details.save()
 
     def apply_discount(self):
         user_points = self.user.points
