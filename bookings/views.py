@@ -119,8 +119,9 @@ class RoomDetailView(View):
                     'check_in': formatted_check_in,
                     'check_out': formatted_check_out,
                     'nights_stay': booking.nights_of_stay(),
-                    'total_price': booking.calculate_price(),
+                    'total_price': booking.apply_discount(),
                     'points_earned': booking.calculate_points_earned(),
+                    'points_used': booking.calculate_points_deducted(),
                 }
 
                 messages.success(
@@ -145,6 +146,7 @@ class BookingConfirmationView(View):
             'nights_stay': booking.nights_of_stay(),
             'total_price': booking.calculate_price(),
             'points_earned': booking.calculate_points_earned(),
+            'points_used': booking.calculate_points_deducted(),
         }
         
         print(context)
