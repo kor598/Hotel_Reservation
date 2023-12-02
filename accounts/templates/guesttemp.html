@@ -9,6 +9,9 @@
 <body>
     {% csrf_token %}
     <h1> hello {{ user.username }} you are a guest</h1>
-    <a href="{% url 'hotel:RoomListView' %}">Bookings</a>
+    <p><a href="{% url 'hotel:RoomListView' %}">Bookings</a></p>
+    <p><a href="{% url 'accounts:logout' %}">Log Out</a></p>
+    <p><a href="{% url 'accounts:password_reset' %}">Reset Password</a></p>
+    <p><a href="{% url 'accounts:update_profile' %}">Update Profile</a></p>
 </body>
 </html>

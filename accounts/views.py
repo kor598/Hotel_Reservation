@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib import admin
-from .forms import LoginForm, GuestRegisterForm
+from .forms import LoginForm, GuestRegisterForm, CustomUserChangeForm
 from django.contrib.auth import authenticate, login
 from .models import *
-#from django.urls import reverse
+from django.contrib.auth.views import LogoutView
 
 # Create your views here.
 def index(request):
@@ -61,12 +60,28 @@ def login_view(request):
 
     return render(request, 'login.html', {'form': form, 'msg': msg})
 
+def update_profile(request):
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts:guestpls')
+    else:
+        form = CustomUserChangeForm(instance=request.user)
+    return render(request, 'update_profile.html', {'form': form})
+
+class CustomLogoutView(LogoutView):
+    def get(self, request, *args, **kwargs):
+        #check logout has occured
+        super().get(request, *args, **kwargs)
+        # Redirect to login page
+        return redirect('accounts:login_view')
+    
 def staff(request):
     return render(request,'staff.html')
 
 def guestpls(request):
     return render(request,'guesttemp.html')
 
-# In views.py
 def test_view(request):
     return render(request, 'test.html')

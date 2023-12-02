@@ -18,7 +18,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        user = self.create_user(email, password=password, **extra_fields)  # Specify password parameter
+        user = self.create_user(email, password=password, **extra_fields)  
         supers_group, _ = Group.objects.get_or_create(name='Supers')
         user.groups.add(supers_group)
         return user

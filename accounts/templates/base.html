@@ -1,0 +1,31 @@
+<!-- base.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Your Website Title{% endblock %}</title>
+    <!-- Add CSS stylesheets or links here -->
+</head>
+<body>
+    <!-- Common header or navigation bar -->
+    <header>
+        <h1>Your Website Name</h1>
+        <nav>
+            <!-- Your navigation links -->
+        </nav>
+    </header>
+
+    <!-- Main content section -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Common footer -->
+    <footer>
+        <!-- Your footer content -->
+    </footer>
+
+</body>
+</html>
