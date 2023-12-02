@@ -1,5 +1,5 @@
 from .models import Room
-
+# implementing design pattern
 class RoomFactory:
     @staticmethod
     def create_room(room_number, room_type, room_beds, room_capacity, room_price, room_description, room_image, hotel=None):
