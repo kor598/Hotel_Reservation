@@ -29,3 +29,23 @@ def process_payment(request, processor_type, booking_id):
         return payment_processor.process_payment(request, booking)
     # Handle unsupported payment method
     return render(request, 'error.html', {'error_message': 'Payment method not found'})
+
+def payment_success(request):
+    
+    booking_id = request.GET.get('booking_id')  # Retrieve booking ID from request
+    booking = Booking.objects.get(pk=booking_id)  # Fetch the corresponding booking object
+    booking.payment_status = 'Paid'
+    booking.save()
+
+    # You can render a success page or message to the user
+    return render(request, 'success.html')
+
+def payment_failure(request):
+    
+    booking_id = request.GET.get('booking_id')  # Retrieve booking ID from request
+    booking = Booking.objects.get(pk=booking_id)  # Fetch the corresponding booking object
+    booking.payment_status = 'Paid'
+    booking.save()
+
+    # You can render a success page or message to the user
+    return render(request, 'failure.html')
