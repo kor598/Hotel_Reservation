@@ -58,3 +58,8 @@ class GuestRegisterForm(UserCreationForm):
         except User.DoesNotExist:
             return username
         raise forms.ValidationError('This username is already taken. Please choose another.')
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ['email']
