@@ -14,8 +14,22 @@ class Booking(models.Model):
     check_out_date = models.DateTimeField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     points_earned = models.IntegerField(default=0)
+    
+    
+    class PaymentStatus(models.TextChoices):
+        PENDING = 'Pending', 'Pending'
+        PAID = 'Paid', 'Paid'
+        FAILED = 'Failed', 'Failed'
+        REFUNDED = 'Refunded', 'Refunded'
 
-    def __str__(self):
+    payment_status = models.CharField(
+        max_length=20,
+        choices=PaymentStatus.choices,
+        default=PaymentStatus.PENDING
+    )
+    
+
+    def _str_(self):
         return f'{self.user} has booked {self.room} from {self.check_in_date} to {self.check_out_date}'
 
     def get_room_type(self):
@@ -30,6 +44,10 @@ class Booking(models.Model):
         nights = self.nights_of_stay()
         room_price = self.room.room_price
         total_price = nights * room_price
+        
+        self.total_price = total_price
+        self.save()
+        
         return total_price
 
     def calculate_discount(self, user_points):
@@ -80,3 +98,8 @@ class Booking(models.Model):
 
     def get_cancel_booking_url(self):
         return reverse_lazy('bookings:CancelBookingView', args=[self.pk])
+    
+    def update_payment_status(self, new_status):
+        # Method to update the payment status
+        self.payment_status = new_status
+        self.save()
