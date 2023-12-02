@@ -29,6 +29,7 @@ class Booking(models.Model):
         nights = self.nights_of_stay()
         room_price = self.room.room_price
         total_price = nights * room_price
+        #booking_discount = self.apply_discount()
         return total_price
 
     def calculate_discount(self, user_points):
@@ -66,16 +67,29 @@ class Booking(models.Model):
         loyalty_details.save()
 
     def apply_discount(self):
-        user_points = self.user.points
+        loyalty_details = LoyaltySystem.objects.get(user=self.user)
+        user_points = loyalty_details.total_points
         discount_percentage = self.calculate_discount(user_points)
         price = self.calculate_price()
+        points_to_minus = discount_percentage * 100 
+        
 
         # Apply discount if applicable
         if discount_percentage > 0:
             discount_amount = (discount_percentage / 100) * price
             discounted_price = price - discount_amount
-            return discounted_price
-        return price
+            price = discounted_price
 
+        return price
+    
+    def calculate_points_deducted(self):
+        loyalty_details = LoyaltySystem.objects.get(user=self.user)
+        user_points = loyalty_details.total_points
+        discount_percentage = self.calculate_discount(user_points)
+        points_to_minus = discount_percentage * 100
+        loyalty_details.total_points -= points_to_minus
+        loyalty_details.save()
+        return points_to_minus
+        
     def get_cancel_booking_url(self):
         return reverse_lazy('bookings:CancelBookingView', args=[self.pk])
