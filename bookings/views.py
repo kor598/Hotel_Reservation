@@ -1,9 +1,9 @@
 from datetime import datetime, time
+from django.utils import timezone
 from typing import Any
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
-from django.core.mail import send_mail
 from django.shortcuts import render
 from django.views.generic import ListView, FormView, View, DeleteView
 from django.urls import reverse, reverse_lazy
@@ -21,17 +21,27 @@ from hotel.models import Room
 from django.views.generic import DeleteView
 
 # Create your views here.
-def CheckInView(request, room_id):
-    room = get_object_or_404(Room, id=room_id)
-    room.check_in()
-    return render(request, 'check_in_success.html', {'room': room})
+class CheckInView(View):
+    def get(self, request, room_id):
+        room = get_object_or_404(Room, id=room_id)
+        return render(request, 'check_in_success.html', {'room': room})
+    
+    def post(self, request, room_id):
+        room = get_object_or_404(Room, id=room_id)
+        room.check_in() 
+        room.save()
+        return render(request, 'check_in_success.html', {'room': room})
 
-def CheckOutView(request, room_id):
-    room = get_object_or_404(Room, id=room_id)
-    room.check_out()
-    return render(request, 'check_out_success.html', {'room': room})
-
-
+class CheckOutView(View):
+    def get(self, request, room_id):
+        room = get_object_or_404(Room, id=room_id)
+        return render(request, 'check_out_success.html', {'room': room})
+    
+    def post(self, request, room_id):
+        room = get_object_or_404(Room, id=room_id)
+        room.check_out() 
+        room.save()
+        return render(request, 'check_out_success.html', {'room': room})
 
 class BookingListView(ListView):
     model = Booking
@@ -88,6 +98,12 @@ class RoomDetailView(View):
             # Add some debugging print statements
             print(check_in_time, check_out_time)
             
+            if check_in_time.date() < timezone.now().date():
+                return HttpResponse('Check-in date cannot be in the past.')
+
+            if check_out_time <= check_in_time:
+                return HttpResponse('Check-out date should be after the check-in date.')
+            
             
             available_rooms = get_available_rooms(room_type, check_in_time, check_out_time)
             
@@ -98,16 +114,43 @@ class RoomDetailView(View):
                 formatted_check_in = check_in_time.strftime("%Y-%m-%d %H:%M:%S")
                 formatted_check_out = check_out_time.strftime("%Y-%m-%d %H:%M:%S")
 
+                context = {
+                    'room_type': room_type,
+                    'check_in': formatted_check_in,
+                    'check_out': formatted_check_out,
+                    'nights_stay': booking.nights_of_stay(),
+                    'total_price': booking.calculate_price(),
+                    'points_earned': booking.calculate_points_earned(),
+                }
+
                 messages.success(
                     self.request,
-                    f'Your booking for a {room_type} room from {formatted_check_in} to {formatted_check_out} has been confirmed!! Thank you for choosing us.'
+                    f'Your booking for a {room_type} room from {formatted_check_in} to {formatted_check_out} has been confirmed! Thank you for choosing us.'
                 )
-                return HttpResponse(booking)
+                return render(request, 'booking_confirmation.html', context)
             else:
                 return HttpResponse('No rooms available for the selected dates. Please try a different room or date.')
         else:
-            # Handle form invalid case
             return HttpResponse('Form data is not valid.')
+        
+        
+class BookingConfirmationView(View):
+    def get(self, request, room_id):
+        booking = Booking.objects.get(pk=room_id)
+
+        context = {
+            'room_type': booking.get_room_type(),
+            'check_in': booking.check_in_date,
+            'check_out': booking.check_out_date,
+            'nights_stay': booking.nights_of_stay(),
+            'total_price': booking.calculate_price(),
+            'points_earned': booking.calculate_points_earned(),
+        }
+        
+        print(context)
+        print(booking.__dict__)
+
+        return render(request, 'booking_confirmation.html', context)
 
 class CancelBookingView(DeleteView):
     model = Booking

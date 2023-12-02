@@ -11,8 +11,8 @@ class RoomFactory:
             room_price=room_price,
             room_description=room_description,
             room_image=room_image,
-            room_status='CLEAN',
-            hotel=hotel  # Associate the room with the hotel if provided
+            room_status='cleaned',
+            hotel=hotel  # Associate the room with the hotel
         )
         return room
 
