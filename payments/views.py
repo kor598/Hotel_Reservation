@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from .payment_processors.paypal_payment_processor import PaypalPaymentProcessor
+from .payment_processors.paypal_payment_processor import PayPalPaymentProcessor
 from .payment_processors.stripe_payment_processor import StripePaymentProcessor
 from bookings.models import Booking
 
@@ -8,7 +8,7 @@ def get_payment_strategy(processor_type):
 
     # payment strategies available
     payment_strategies = {
-        'paypal': PaypalPaymentProcessor,
+        'paypal': PayPalPaymentProcessor,
         'stripe': StripePaymentProcessor,
     }
 
