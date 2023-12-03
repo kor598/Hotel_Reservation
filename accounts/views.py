@@ -3,7 +3,11 @@ from .forms import LoginForm, GuestRegisterForm, CustomUserChangeForm
 from django.contrib.auth import authenticate, login
 from .models import *
 from django.contrib.auth.views import LogoutView
-
+from django.views import View
+from django.contrib.auth.decorators import user_passes_test
+from hotel.models import Room, HotelRoom
+from bookings.models import Booking
+from hotel.room_status import RoomStatus
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
@@ -42,22 +46,28 @@ def login_view(request):
             if user is not None:
                 login(request, user)
 
-                staff_group = Group.objects.filter(name='Staff').first()
+                cleaner_group = Group.objects.filter(name='Cleaners').first()
                 guests_group = Group.objects.filter(name='Guests').first()
                 #Redirecting users based on groups
-                if staff_group and staff_group in user.groups.all():
-                    return redirect('staff')
-                elif guests_group and guests_group in user.groups.all():
+                if cleaner_group  in user.groups.all():
+                    return redirect('accounts:cleaners_view')
+                elif guests_group in user.groups.all():
                     return redirect('accounts:guestpls')
                 elif user.is_staff or user.is_superuser:
                     return redirect('admin:index')
                 else:
                     msg = 'User does not belong to any recognized group.'
             else:
-                msg = 'Invalid credentials'
+                # Check if the user exists but the password is incorrect
+                user_exists = authenticate(username=username, password='')
+                if user_exists:
+                    msg = 'Incorrect password.\nNote: Staff and Admin must reset password on first login.'
         else:
-            msg = 'Error validating form'
-
+            msg = 'Invalid username'
+    else:
+        msg = 'Error validating form'
+    if msg:
+        msg = msg.replace('\n', '<br>')
     return render(request, 'login.html', {'form': form, 'msg': msg})
 
 def update_profile(request):
@@ -77,8 +87,11 @@ class CustomLogoutView(LogoutView):
         # Redirect to login page
         return redirect('accounts:login_view')
     
-def staff(request):
-    return render(request,'staff.html')
+#@user_passes_test(lambda u: u.groups.filter(name='Cleaners').exists(), login_url='/login/')
+def cleaners_view(request):
+    checked_out_rooms = HotelRoom.objects.filter(room__room_status=RoomStatus.CHECKED_OUT.value)
+    context = {'checked_out_rooms': checked_out_rooms}
+    return render(request, 'cleaners.html', context)
 
 def guestpls(request):
     return render(request,'guesttemp.html')

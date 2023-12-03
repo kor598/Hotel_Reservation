@@ -1,5 +1,5 @@
 from django.urls import include, path, reverse_lazy
-from .views import index, login_view, guest_register, staff, guestpls, CustomLogoutView, update_profile
+from .views import index, login_view, guest_register, cleaners_view, guestpls, CustomLogoutView, update_profile
 from django.contrib.auth import views as auth_views
 
 app_name = 'accounts'
@@ -8,7 +8,7 @@ urlpatterns = [
     path('', index, name= 'index'),
     path('login/', login_view, name='login_view'),
     path('register/', guest_register, name='guest_register'),
-    path('staff/', staff, name='staff'),
+    path('cleaners/', cleaners_view, name='cleaners_view'),
     path('guesttemp/', guestpls, name='guestpls'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
     path('update-profile/', update_profile, name='update_profile'),
