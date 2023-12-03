@@ -89,7 +89,7 @@ class Booking(models.Model):
         user_points = loyalty_details.total_points
         discount_percentage = self.calculate_discount(user_points)
         price = self.calculate_price()
-        points_to_minus = discount_percentage * 100 
+        
         
 
         # Apply discount if applicable
