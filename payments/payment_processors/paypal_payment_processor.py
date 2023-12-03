@@ -5,6 +5,7 @@ import uuid
 from paypal.standard.forms import PayPalPaymentsForm
 from django.urls import reverse
 from django.shortcuts import render, redirect
+from models import Order
 
 # concrete strategy for PayPal
 class PayPalPaymentProcessor(PaymentStrategy, View):
@@ -27,8 +28,32 @@ class PayPalPaymentProcessor(PaymentStrategy, View):
         context = {'form': form}
         return render(request, 'payment.html', context)
 
-    def payment_success(self, request):
+    def payment_success(self, request,booking):
+        order = Order.objects.create(
+            user=request.user,  # Assuming the user is authenticated
+            amount=booking.total_price,
+            status='Paid',
+            booking=booking,
+        )
+
+        # Update booking payment status if needed
+        booking.payment_status = 'Paid'
+        booking.save()
+
         return render(request, 'success.html')
 
-    def payment_failure(self, request):
-        return render(request, 'cancelled.html')
+    def payment_failure(self, request, booking):
+        
+        order = Order.objects.create(
+            user=request.user,  # Assuming the user is authenticated
+            amount=booking.total_price,
+            status='Failed',  # You can set a different status for failed payments
+            booking=booking,
+        )
+
+        # Update booking payment status if needed
+        booking.payment_status = 'Failed'
+        booking.save()
+
+        # Handle failure within the payment processor
+        return render(request, 'cancelled.html', {'order': order})
