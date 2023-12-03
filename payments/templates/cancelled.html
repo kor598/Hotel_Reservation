@@ -2,10 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width={device-width}, initial-scale=1.0">
-    <title>Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed</title>
+
 </head>
 <body>
-    <h1>Payment Cancelled</h1>
+
+    <h1>Payment Failed</h1>
+    <p>We're sorry, but your payment was not successful. Please try again or choose a different payment method.</p>
+
+    <h2>Order Details</h2>
+
+    <p>User: {{ order.user.username }}</p>
+    <p>Amount: {{ order.amount }}</p>
+    <p>Status: {{ order.status }}</p>
+
+
 </body>
 </html>
