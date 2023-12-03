@@ -2,6 +2,6 @@
 from enum import Enum
 
 class RoomStatus(Enum):
-    CHECKED_IN = 'checked_in'
-    CHECKED_OUT = 'checked_out'
-    CLEANED = 'cleaned'
+    CHECKED_IN = 'CHECKED_IN'
+    CHECKED_OUT = 'CHECKED_OUT'
+    CLEANED = 'CLEANED'

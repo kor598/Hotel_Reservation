@@ -4,13 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checked Out Rooms</title>
 </head>
 <body>
     <h1>Checked Out Rooms</h1>
+    <h1>Checked Out Rooms ({{ checked_out_rooms.count }})</h1>
     <ul>
         {% for room in checked_out_rooms %}
-            <li>Room ID: {{ room.room_id }} - Check Out Date: {{ room.room.booking.check_out_date }}</li>
+            <li>
+                Room ID: {{ room.room_id }} - Check Out Date: {{ room.room.booking.check_out_date }}
+                <form method="post" action="{% url 'accounts:cleaners_view' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="hidden" name="room_id" value="{{ room.room_id }}">
+                    <button type="submit">Clean Room</button>
+                </form>
+            </li>
         {% endfor %}
     </ul>
 </body>

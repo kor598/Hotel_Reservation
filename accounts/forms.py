@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import User
+from hotel.models import Room
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -58,6 +59,15 @@ class GuestRegisterForm(UserCreationForm):
         except User.DoesNotExist:
             return username
         raise forms.ValidationError('This username is already taken. Please choose another.')
+
+class ChangeRoomStatusForm(forms.ModelForm):
+    class Meta:
+        model = Room
+        fields = ['room_number']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Customize the form if needed (e.g., add extra widgets or queryset filtering)
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:

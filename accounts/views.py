@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm, GuestRegisterForm, CustomUserChangeForm
+from .forms import LoginForm, GuestRegisterForm, CustomUserChangeForm, ChangeRoomStatusForm
 from django.contrib.auth import authenticate, login
 from .models import *
 from django.contrib.auth.views import LogoutView
 from django.views import View
 from django.contrib.auth.decorators import user_passes_test
-from hotel.models import Room, HotelRoom
-from bookings.models import Booking
+from hotel.models import HotelRoom
 from hotel.room_status import RoomStatus
 # Create your views here.
 def index(request):
@@ -86,11 +85,28 @@ class CustomLogoutView(LogoutView):
         super().get(request, *args, **kwargs)
         # Redirect to login page
         return redirect('accounts:login_view')
-    
-#@user_passes_test(lambda u: u.groups.filter(name='Cleaners').exists(), login_url='/login/')
+
 def cleaners_view(request):
+    # Get all checked-out rooms
     checked_out_rooms = HotelRoom.objects.filter(room__room_status=RoomStatus.CHECKED_OUT.value)
-    context = {'checked_out_rooms': checked_out_rooms}
+    print(checked_out_rooms)
+    if request.method == 'POST':
+        # Check if the form is valid (you need to create the form in your forms.py)
+        form = ChangeRoomStatusForm(request.POST)
+        if form.is_valid():
+            # Get the selected room from the form
+            selected_room = form.cleaned_data['room']
+
+            # Use the clean_room function to change the status
+            selected_room.room.clean_room()
+
+            # Redirect to the same view to update the room list
+            return redirect('cleaners_view')
+
+    else:
+        form = ChangeRoomStatusForm()
+
+    context = {'checked_out_rooms': checked_out_rooms, 'form': form}
     return render(request, 'cleaners.html', context)
 
 def guestpls(request):
