@@ -43,34 +43,16 @@ class LoyaltySystem(models.Model):
 class StandardGuest(LoyaltySystem):
     loyaltysystem_ptr = models.OneToOneField(LoyaltySystem, on_delete=models.CASCADE, parent_link=True, default=0)
 
-    def update_membership_tier(self):
-        super().update_membership_tier()
-        stays_last_366_days = self.stays.filter(date__gte=datetime.now() - timedelta(days=366))
-        if stays_last_366_days.count() < 20:
-            self.membership_tier = "Standard"
+    
 
 class SilverGuest(LoyaltySystem):
     loyaltysystem_ptr = models.OneToOneField(LoyaltySystem, on_delete=models.CASCADE, parent_link=True, default=0)
 
-    def update_membership_tier(self):
-        super().update_membership_tier()
-        stays_last_366_days = self.stays.filter(date__gte=datetime.now() - timedelta(days=366))
-        if stays_last_366_days.count() >= 20:
-            self.membership_tier = "Silver"
-            
+    
 class GoldGuest(LoyaltySystem):
     loyaltysystem_ptr = models.OneToOneField(LoyaltySystem, on_delete=models.CASCADE, parent_link=True, default=0)
 
-    def update_membership_tier(self):
-        super().update_membership_tier()
-        stays_last_366_days = self.stays.filter(date__gte=datetime.now() - timedelta(days=366))
-        if stays_last_366_days.count() >= 50:
-            self.membership_tier = "Gold"
+    
 
 class DiamondGuest(LoyaltySystem):
     loyaltysystem_ptr = models.OneToOneField(LoyaltySystem, on_delete=models.CASCADE, parent_link=True, default=0)
-    def update_membership_tier(self):
-        super().update_membership_tier()
-        stays_last_366_days = self.stays.filter(date__gte=datetime.now() - timedelta(days=366))
-        if stays_last_366_days.count() >= 100:
-            self.membership_tier = "Diamond"
