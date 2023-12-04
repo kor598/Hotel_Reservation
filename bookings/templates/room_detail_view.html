@@ -29,7 +29,8 @@
 
             <!-- Div 1: Back to Home -->
             <div class="home">
-                <a href="{% url 'hotel:RoomListView' %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
+                <a href="{% if hotel_id %}{% url 'hotel:RoomListView' hotel_id=hotel_id %}{% endif %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
+
             </div>
 
             <!-- Div 2: Room Information -->

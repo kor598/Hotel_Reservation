@@ -29,7 +29,7 @@
 
             <!-- Div 1: Back to Home -->
             <div class="home">
-                <a href="{% url 'hotel:RoomListView' %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
+                <a href="{% if hotel_id %}{% url 'hotel:RoomListView' hotel_id=hotel_id %}{% endif %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
             </div>
 
             <!-- Div 2: Room Information -->
@@ -45,12 +45,16 @@
             <form id="booking-form" action="" method="POST">
 
                 {% csrf_token %}
-                <h2>Are you sure you want to cancel this booking? Details-</h2>
-                <h3>{{booking.room.number}}{{booking.get_room_category}} {{booking}}</h3>
-                <!-- Input Div -->
-                <div class="input-div">
-                    <button type="submit">Cancel the Booking</button>
-                </div>
+                <h2>Are you sure you want to cancel this booking?</h2>
+                <h3>Details</h3>
+                <p>Room: {{ booking.room }}</p>
+                <p>Check-in Date: {{ booking.check_in_date }}</p>
+                <p>Check-out Date: {{ booking.check_out_date }}</p>
+                <p>Total Price: {{ booking.total_price }}</p>
+                <!-- Add other relevant booking details as needed -->
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit">Confirm Cancellation</button>
 
             </form>
 
