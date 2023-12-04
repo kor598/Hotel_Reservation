@@ -138,10 +138,10 @@ class RoomDetailView(View):
                     'points_used': booking.calculate_points_deducted(),
                 }
 
-                messages.success(
-                    self.request,
-                    f'Your booking for a {room_type} room from {formatted_check_in} to {formatted_check_out} has been confirmed! Thank you for choosing us.'
-                )
+                # messages.success(
+                #     self.request,
+                #     f'Your booking for a {room_type} room from {formatted_check_in} to {formatted_check_out} has been confirmed! Thank you for choosing us.'
+                # )
 
                 # Fetch the hotel ID dynamically from the booked room or replace it with the correct logic
                 hotel_id = None
