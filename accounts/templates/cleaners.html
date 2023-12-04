@@ -1,0 +1,43 @@
+<!-- accounts/templates/accounts/cleaners.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Rooms</title>
+</head>
+<body>
+    <h1>All Rooms for {{ selected_hotel.name }}</h1>
+
+    <form method="post" action="{% url 'accounts:cleaners_view' %}">
+        {% csrf_token %}
+        <!-- Hotel selection -->
+        <select name="hotel">
+            {% for hotel in hotels %}
+                <option value="{{ hotel.id }}" {% if selected_hotel and hotel.id == selected_hotel.id %}selected="selected"{% endif %}>{{ hotel.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Select Hotel</button>
+    </form>
+
+    {% if selected_hotel %}
+    <h2>Selected Hotel: {{ selected_hotel.name }}</h2>
+    <ul>
+        {% for room in all_rooms_for_hotel %}
+            <li>
+                Room ID: {{ room.id }} - Room Number: {{ room.room_number }} - Status: {{ room.room_status }}
+                {% if room.room_status == 'CHECKED_OUT' %}
+                <!-- Button to update room status -->
+                <form method="post" action="{% url 'accounts:update_room_status' room.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="room_id" value="{{ room.id }}">
+                    <button type="submit">Mark as Cleaned</button>
+                </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+</html>

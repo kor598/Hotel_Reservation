@@ -1,20 +1,26 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 from hotel.hotel_functions.room_creator import create_rooms_for_standard_hotel
-from .models import Hotel
+from .models import Hotel, Room
 
 from hotel.room_functions.get_room_list import get_room_type_url_list
 from hotel.hotel_functions.create_rooms import create_rooms_for_hotel
 
 # Create your views here.
-#  seeimg rooms
-def room_list_view(request):
-    room_list = get_room_type_url_list()
-    context = {
-        "room_list": room_list,
-    }
-    return render(request, 'room_list_view.html', context)
 
+# Display the list of hotels for selection
+def choose_hotel_view(request):
+    hotels = Hotel.objects.all()
+    context = {'hotels': hotels}
+    return render(request, 'choose_hotel.html', context)
+
+#  seeimg rooms
+def room_list_view(request, hotel_id):
+    hotel = get_object_or_404(Hotel, id=hotel_id)
+    rooms = Room.objects.filter(hotel=hotel)  # Filter rooms related to the selected hotel
+    room_list = get_room_type_url_list(rooms)
+    context = {'hotel': hotel, 'room_list': room_list}  # Ensure it's 'room_list' in the context
+    return render(request, 'room_list_view.html', context)
 
 
 def generate_hotel_with_rooms(hotel_name, num_rooms):

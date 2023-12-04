@@ -1,0 +1,19 @@
+<!-- update_profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile</title>
+</head>
+<body>
+
+  <h2>Update Profile</h2>
+  <form method="post" action="{% url 'accounts:update_profile' %}">
+    {% csrf_token %}
+    {{ form.email.label_tag }} {{ form.email }}
+    <button type="submit">Update Profile</button>
+  </form>
+
+</body>
+</html>

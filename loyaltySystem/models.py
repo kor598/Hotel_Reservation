@@ -13,7 +13,7 @@ class LoyaltySystem(models.Model):
     membership_tier = models.CharField(max_length=50, default="Standard")
     last_checkin_date = models.DateTimeField(auto_now_add=True)
     
-    objects = LoyaltySystemManager() 
+    objects = LoyaltySystemManager()
 
     def update_membership_tier(self):
         # Calculate the date 366 days ago from today

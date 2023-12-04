@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
-
-class LoyaltysystemConfig(AppConfig):
+class LoyaltySystemConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'loyaltySystem'
+    

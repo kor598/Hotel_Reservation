@@ -1,0 +1,73 @@
+/* Root CSS */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa; /* Light gray background */
+    color: #007bff; /* Primary color */
+    text-align: center;
+    margin: 0;
+}
+
+/* Brand CSS */
+#brand {
+    font-family: 'Roboto', sans-serif;
+    font-size: 3rem;
+    margin: 1.5rem;
+}
+
+/* Main Div */
+.content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+/* Hotel Divs */
+.hotel {
+    max-width: 20%;
+    min-width: 200px;
+    text-align: center;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0.5rem;
+    background-color: #007bff; /* Primary color for hotel div */
+    flex: 1;
+}
+
+.hotel:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Inside Hotel Divs */
+a {
+    text-decoration: none;
+    color: #ffffff; /* White text color */
+    font-family: 'Roboto', sans-serif; /* Font from the second CSS */
+}
+
+img {
+    max-width: 90%;
+}
+
+.hotel-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.hotel-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}

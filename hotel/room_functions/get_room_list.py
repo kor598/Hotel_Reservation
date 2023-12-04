@@ -3,13 +3,15 @@ from hotel.models import Room
 
 # function that returns list of rooms
 
-def get_room_type_url_list():
-    room = Room.objects.first()  # Fetch the first room object
-    room_types = dict(room.ROOM_TYPES) if room else {}  # Creating dictionary from room types tuple
-    
+
+def get_room_type_url_list(rooms):
     room_type_url_list = []
-    for room_type, room_name in room_types.items():
-        room_url = reverse('bookings:RoomDetailView', kwargs={'type': room_type})
-        room_type_url_list.append((room_name, room_url))  # Changed room to room_name
-        
+    added_room_types = set()  # Keep track of added room types
+    
+    for room in rooms:
+        if room.room_type not in added_room_types:
+            room_url = reverse('bookings:RoomDetailView', kwargs={'type': room.room_type})
+            room_type_url_list.append((room.room_type, room_url))
+            added_room_types.add(room.room_type)  # Add the room type to the set
+    
     return room_type_url_list
