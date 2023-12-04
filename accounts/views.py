@@ -110,7 +110,8 @@ def cleaners_view(request):
 
     if selected_hotel_id:
         selected_hotel = Hotel.objects.get(id=selected_hotel_id)
-        all_rooms_for_hotel = selected_hotel.rooms.all()
+        #all_rooms_for_hotel = selected_hotel.rooms.all()
+        all_rooms_for_hotel = selected_hotel.rooms.filter(room_status='CHECKED_OUT')
 
     hotels = Hotel.objects.all()
 

@@ -1,3 +1,4 @@
+<!-- accounts/templates/accounts/cleaners.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +27,8 @@
         {% for room in all_rooms_for_hotel %}
             <li>
                 Room ID: {{ room.id }} - Room Number: {{ room.room_number }} - Status: {{ room.room_status }}
-                {% if room.room_status == 'checked_out' %}
-                <!-- Form to update room status -->
+                {% if room.room_status == 'CHECKED_OUT' %}
+                <!-- Button to update room status -->
                 <form method="post" action="{% url 'accounts:update_room_status' room.id %}">
                     {% csrf_token %}
                     <input type="hidden" name="room_id" value="{{ room.id }}">
