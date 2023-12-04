@@ -2,10 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width={device-width}, initial-scale=1.0">
-    <title>Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success</title>
 </head>
 <body>
     <h1>Payment Successful</h1>
+
+    <p>Booking Details:</p>
+    <p>Booking ID: {{ booking.id }}</p>
+
+    <p>Order Details:</p>
+    <p>Order ID: {{ order.id }}</p>
+    <p>User: {{ order.user.username }}</p>
+    <p>Amount: {{ order.amount }}</p>
+    <p>Status: {{ order.status }}</p>
+    
 </body>
 </html>
