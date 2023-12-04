@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import LoginForm, GuestRegisterForm, CustomUserChangeForm, ChangeRoomStatusForm
 from django.contrib.auth import authenticate, login
-from .models import *
+from .models import User, Guest, Cleaner, GuestManager, CleanerManager, UserManager
 from django.contrib.auth.views import LogoutView, PasswordResetView
 from django.views import View
 from django.contrib.auth.decorators import user_passes_test
@@ -13,63 +13,113 @@ from django.contrib import messages
 def index(request):
     return render(request, 'index.html')
 
+class GuestRegister(View):
+    def get(self, request):
+        # Your GET method logic here
+        return render(request, 'register.html', {'form': GuestRegisterForm(), 'msg': None})
 
-def guest_register(request):
-    msg = None
-    if request.method == 'POST':
+    def post(self, request):
+        # Your POST method logic here
         form = GuestRegisterForm(request.POST)
         if form.is_valid():
-            # Instead of calling form.save(), use your custom method
             email = form.cleaned_data['email']
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']  # Assuming you have password fields in your form
+            password = form.cleaned_data['password1']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            phone_number = form.cleaned_data['phone_number']
 
-            # Call the create_guest method
-            user = User.objects.create_guest(email=email, username=username, password=password)
+            # Create a Guest instance
+            guest = Guest.objects.create(email=email, password=password,
+                                         first_name=first_name, last_name=last_name, phone_number=phone_number)
 
-            msg = 'user created'
+            guest.set_password(password)
+            guest.save()
+
+            msg = 'User created'
             return redirect('accounts:login_view')
         else:
-            msg = 'form is not valid'
-    else:
-        form = GuestRegisterForm()
+            msg = 'Form is not valid'
 
-    return render(request, 'register.html', {'form': form, 'msg': msg})
+        return render(request, 'register.html', {'form': form, 'msg': msg})
+
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from .forms import LoginForm  # Assuming you have a forms.py file in your 'accounts' app
 
 def login_view(request):
     form = LoginForm(request.POST or None)
     msg = None
+
     if request.method == 'POST':
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            user = authenticate(request, username=username, password=password)
+
             if user is not None:
                 login(request, user)
 
-                cleaner_group = Group.objects.filter(name='Cleaners').first()
-                guests_group = Group.objects.filter(name='Guests').first()
-                #Redirecting users based on groups
-                if cleaner_group  in user.groups.all():
+                if user.groups.filter(name='Cleaners').exists():
+                    print("Redirecting to Cleaner view")
                     return redirect('accounts:cleaners_view')
-                elif guests_group in user.groups.all():
+                elif user.groups.filter(name='Guests').exists():
+                    print("Redirecting to Guest view")
                     return redirect('accounts:guestpls')
                 elif user.is_staff or user.is_superuser:
+                    print("Redirecting to Admin view")
                     return redirect('admin:index')
                 else:
                     msg = 'User does not belong to any recognized group.'
             else:
                 # Check if the user exists but the password is incorrect
-                user_exists = authenticate(username=username, password='')
+                user_exists = authenticate(request, username=username, password='')
                 if user_exists:
                     msg = 'Incorrect password.\nNote: Staff and Admin must reset password on first login.'
         else:
             msg = 'Invalid username'
     else:
         msg = 'Error validating form'
+
     if msg:
         msg = msg.replace('\n', '<br>')
+
     return render(request, 'login.html', {'form': form, 'msg': msg})
+
+# def login_view(request):
+#     form = LoginForm(request.POST or None)
+#     msg = None
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             username = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password')
+#             user = authenticate(username=username, password=password)
+#             if user is not None:
+#                 print(f"User group: {user.groups.all()}")
+#                 print(f"Is staff: {user.is_staff}")
+#                 print(f"Is superuser: {user.is_superuser}")
+
+#                 login(request, user)
+
+#                 if isinstance(user, Cleaner):
+#                     return redirect('accounts:cleaners_view')
+#                 elif isinstance(user, Guest):
+#                     return redirect('accounts:guestpls')
+#                 elif user.is_staff or user.is_superuser:
+#                     return redirect('admin:index')
+#                 else:
+#                     msg = 'User does not belong to any recognized group.'
+#             else:
+#                 # Check if the user exists but the password is incorrect
+#                 user_exists = authenticate(username=username, password='')
+#                 if user_exists:
+#                     msg = 'Incorrect password.\nNote: Staff and Admin must reset password on first login.'
+#         else:
+#             msg = 'Invalid username'
+#     else:
+#         msg = 'Error validating form'
+#     if msg:
+#         msg = msg.replace('\n', '<br>')
+#     return render(request, 'login.html', {'form': form, 'msg': msg})
 
 def update_profile(request):
     if request.method == 'POST':
@@ -118,7 +168,6 @@ def cleaners_view(request):
 
             # Redirect to the same view to update the room list
             return redirect('cleaners_view')
-
     else:
         form = ChangeRoomStatusForm()
 

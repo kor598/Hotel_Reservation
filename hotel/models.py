@@ -1,7 +1,6 @@
 from datetime import date
 import logging
 from django.db import models
-from loyaltySystem.models import LoyaltySystem
 from hotel.room_status import RoomStatus
 
 class Hotel(models.Model):

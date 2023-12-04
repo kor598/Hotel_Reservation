@@ -1,12 +1,12 @@
 from django.db import models
 from datetime import datetime, timedelta
-from accounts.models import User
 
 class LoyaltySystemManager(models.Manager):
     pass
 
 class LoyaltySystem(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    from accounts.models import Guest
+    user = models.OneToOneField(Guest, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     total_points = models.IntegerField(default=0)
     membership_tier = models.CharField(max_length=50, default="Standard")
