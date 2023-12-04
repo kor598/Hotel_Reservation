@@ -14,7 +14,7 @@ from loyaltySystem.models import LoyaltySystem
 def index(request):
     return render(request, 'index.html')
 
-
+#view for registering guests, only for guests as method assigns them to guest group
 def guest_register(request):
     msg = None
     if request.method == 'POST':

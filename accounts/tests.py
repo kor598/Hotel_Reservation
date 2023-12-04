@@ -6,6 +6,7 @@ from loyaltySystem.models import LoyaltySystem
 from accounts.signals import create_loyalty_system
 from accounts.models import User
 
+#tests createloyaltysystem and updatemembershiptier signals
 class SignalTestCase(TestCase):
     def setUp(self):
         # Connect the signal for the test

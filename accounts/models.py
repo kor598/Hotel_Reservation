@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager, Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+#Override djangos usermanager
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, **extra_fields):
         if not email:
@@ -30,7 +31,7 @@ class UserManager(BaseUserManager):
         admins_group, _ = Group.objects.get_or_create(name='Admin')
         user.groups.add(admins_group)
         return user
-
+#called in register_guest in view
     def create_guest(self, email, username, password=None, **extra_fields):
         # Create a guest user and assign them to the 'Guests' group
         user = self.create_user(email, username=username, password=password, **extra_fields)
@@ -43,6 +44,6 @@ class UserManager(BaseUserManager):
         cleaner_group, _ = Group.objects.get_or_create(name='Cleaners')
         user.groups.add(cleaner_group)
         return user
-
+#custom user and assign to usermanager
 class User(AbstractUser):
     objects = UserManager()

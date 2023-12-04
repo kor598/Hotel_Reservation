@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import User
 from hotel.models import Room
 
+#custom login form
 class LoginForm(forms.Form):
     username = forms.CharField(
         widget= forms.TextInput(
@@ -18,7 +19,7 @@ class LoginForm(forms.Form):
             }
         )
     )
-
+#form for registering guests, only works for guests as view assigns to groups guests and is_staff is set to false
 class GuestRegisterForm(UserCreationForm):
     username = forms.CharField(
         widget=forms.TextInput(
@@ -51,11 +52,11 @@ class GuestRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
-
+    #for checking username is unique
     def clean_username(self):
         username = self.cleaned_data['username']
         try:
-            User.objects.get(username__iexact=username)  # Use your custom user model's manager
+            User.objects.get(username__iexact=username) 
         except User.DoesNotExist:
             return username
         raise forms.ValidationError('This username is already taken. Please choose another.')
@@ -67,8 +68,8 @@ class ChangeRoomStatusForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Customize the form if needed (e.g., add extra widgets or queryset filtering)
 
+#for editing user details
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
