@@ -1,4 +1,5 @@
 from datetime import datetime, time
+from django.http import HttpResponseBadRequest
 from django.utils import timezone
 from typing import Any
 from django.db.models.query import QuerySet
@@ -28,6 +29,26 @@ class CheckInView(View):
     
     def post(self, request, room_id):
         room = get_object_or_404(Room, id=room_id)
+        
+        
+        # Get all bookings for the room
+        room_bookings = Booking.objects.filter(room=room)
+        
+        if not room_bookings:
+            return HttpResponseBadRequest("No bookings found for this room.")
+        
+        # Check if the current date matches any booking date for the room
+        current_date = timezone.now().date()
+        matching_booking = room_bookings.filter(check_in_date__date=current_date).first()
+        
+        if not matching_booking:
+            return HttpResponseBadRequest("Cannot check in: This booking is not for today.")
+        
+        # Check if the room status is clean
+        if room.room_status != 'cleaned':
+            return HttpResponseBadRequest("Cannot check in: Room is not clean. Please contact a staff member.")
+        
+        
         room.check_in() 
         room.save()
         return render(request, 'check_in_success.html', {'room': room})
