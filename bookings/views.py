@@ -150,7 +150,7 @@ class RoomDetailView(View):
 
                 if hotel_id:
                     room_list_url = reverse('hotel:RoomListView', args=[hotel_id])
-                    return redirect('paypal-payment', booking_id=booking.booking_id)
+                    return redirect('paypal-payment', booking_id=booking.id)
                     # return HttpResponseRedirect(room_list_url)
                 else:
                     return HttpResponse('Hotel not found!')

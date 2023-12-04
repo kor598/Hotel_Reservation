@@ -8,16 +8,22 @@
 <body>
     <h1>Payment Cancelled</h1>
     
+    <p>Booking Details:</p>
+    <p>Booking ID: {{ booking.id }}</p>
+
     <p>Order Details:</p>
     <p>Order ID: {{ order.id }}</p>
     <p>User: {{ order.user.username }}</p>
     <p>Amount: {{ order.amount }}</p>
     <p>Status: {{ order.status }}</p>
     
-    <!-- Add more details as needed -->
-    
-    <p>Booking Details:</p>
-    <p>Booking ID: {{ booking.id }}</p>
-    <!-- Add more booking details as needed -->
+    <p>Check-in: {{ booking.check_in_date }}</p>
+    <p>Check-out: {{ booking.check_out_date }}</p>
+
+    <div class="home">
+        <a href="{% url 'bookings:BookingListView' %}"><i class="fas fa-arrow-alt-circle-left"></i>Home</a>
+    </div>
+
+
 </body>
 </html>
