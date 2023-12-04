@@ -28,14 +28,13 @@ class Room(models.Model):
         ('DOUBLE', 'Double'),
         ('FAMILY', 'Family'),
     )
-
+#room status field
     room_status = models.CharField(
         max_length=20,
-        # Assuming RoomStatus is defined somewhere else
         choices=[
             (status.value, status.name) for status in RoomStatus
         ],
-        default=RoomStatus.CLEANED.value,
+        default=RoomStatus.CLEANED.value, #set default to cleaned so is available for checkin, can change in django admin
     )
     room_number = models.IntegerField()
     room_type = models.CharField(max_length=20, choices=ROOM_TYPES)
