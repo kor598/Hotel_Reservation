@@ -19,7 +19,7 @@
                 <p>View your bookings here.</p>
             </div>
             <div class="home">
-                <!-- Div 1: Back to Home -->
+                <!-- Back to Home -->
                 <div class="home">
                     {% csrf_token %}
                     <a href="{% url 'accounts:guestpls' %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
@@ -62,6 +62,7 @@
                         </form>
                     </div>
                     <div class="cancel">
+                        <!-- Cancel button -->
                         <a href="{% url 'bookings:CancelBookingView' pk=booking.pk %}" class="invisible">
                             <i class="far fa-2x fa-times-zcircle"> Cancel Booking</i>
                         </a>

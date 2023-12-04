@@ -8,14 +8,13 @@
     <title>Room Detail</title>
     <script src="https://kit.fontawesome.com/692189991f.js" crossorigin="anonymous"></script>
 
-    <!-- Main StyleSheet -->
+
     <link rel="stylesheet" href="{% static 'css/room_detail_view.css' %}">
 
 </head>
 
 <body>
 
-    <!-- Main Content -->
     <div class="content">
 
         <!-- Room Image -->
@@ -24,15 +23,13 @@
                 src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60">
         </div>
 
-        <!-- Room Details -->
         <div class="room">
 
-            <!-- Div 1: Back to Home -->
             <div class="home">
                 <a href="{% if hotel_id %}{% url 'hotel:RoomListView' hotel_id=hotel_id %}{% endif %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
             </div>
 
-            <!-- Div 2: Room Information -->
+            <!-- room info -->
             <div class="room-info">
                 <h1>{{room_category}}</h1>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Id optio rem saepe culpa architecto tempora
@@ -41,7 +38,7 @@
                     rerum repellendus magnam labore. </p>
             </div>
 
-            <!-- Div 3: Room Booking Form -->
+            <!-- cancelling booking -->
             <form id="booking-form" action="" method="POST">
 
                 {% csrf_token %}
@@ -51,16 +48,15 @@
                 <p>Check-in Date: {{ booking.check_in_date }}</p>
                 <p>Check-out Date: {{ booking.check_out_date }}</p>
                 <p>Total Price: {{ booking.total_price }}</p>
-                <!-- Add other relevant booking details as needed -->
                 <form method="post">
                     {% csrf_token %}
                     <button type="submit">Confirm Cancellation</button>
 
             </form>
 
-        </div> <!-- END Room Div -->
+        </div> <!-- END Room  -->
 
-    </div> <!-- END Main Content Div -->
+    </div> <!-- END Main Content  -->
 
 </body>
 
