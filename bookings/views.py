@@ -39,14 +39,22 @@ class CheckInView(View):
         
         # Check if the current date matches any booking date for the room
         current_date = timezone.now().date()
+        current_time = timezone.now().time()
+        check_in_time = time(16, 0, 0)  # 4 PM set check in time
+        
         matching_booking = room_bookings.filter(check_in_date__date=current_date).first()
         
         if not matching_booking:
             return HttpResponseBadRequest("Cannot check in: This booking is not for today.")
+        elif matching_booking.check_in_date.time() < check_in_time:
+            return HttpResponseBadRequest("Cannot check in: Check-in time is before 4 PM.")
         
         # Check if the room status is clean
         if room.room_status != 'cleaned':
             return HttpResponseBadRequest("Cannot check in: Room is not clean. Please contact a staff member.")
+        
+        if room.room_status != 'checked_in':
+            return HttpResponseBadRequest("You've already checked in!")
         
         
         room.check_in() 
