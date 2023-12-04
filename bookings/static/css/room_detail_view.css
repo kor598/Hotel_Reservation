@@ -50,7 +50,6 @@ form{
     flex-direction: column;
 }
 
-/* Inside Sub Divs */
 
 .image img{
     flex:1;
@@ -62,7 +61,6 @@ i{
     font-size: 2rem;
 }
 
-/* Form's CSS */
 
 .input-div{
     flex: 1 1 auto;

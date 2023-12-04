@@ -2,14 +2,14 @@ from hotel.models import Hotel
 from hotel.room_factory import RoomFactory
 
 def create_rooms_for_standard_hotel(hotel_name, num_rooms):
-    # Calculate the distribution of rooms among different types
+    # calculate the distribution of rooms among different types
     num_single = num_rooms // 3  # Dividing among single, double, and family rooms equally, or as equally as possible
     num_double = num_rooms // 3
     num_family = num_rooms - (num_single + num_double)
 
     created_rooms = []
 
-    # Create the hotel if it doesn't exist
+    # creates hotel
     existing_hotel = Hotel.objects.filter(name=hotel_name).first()
 
     if not existing_hotel:
@@ -19,7 +19,7 @@ def create_rooms_for_standard_hotel(hotel_name, num_rooms):
             number_of_rooms=num_rooms
         )
 
-        # Create rooms for the hotel
+        # Create rooms 
         for i in range(num_single):
             room = RoomFactory.create_single_room(
                 room_number=f'1{i + 1}', # room numbers for single all start with 1

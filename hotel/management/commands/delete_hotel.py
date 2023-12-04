@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from hotel.models import Hotel
 
+# command delete_hotel
 class Command(BaseCommand):
     help = 'Deletes hotels based on criteria'
 

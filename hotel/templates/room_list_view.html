@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hotel</title>
-    <!-- Main StyleSheet -->
     <link rel="stylesheet" href="{% static 'css/room_list_view.css' %}">
 </head>
 
@@ -14,7 +13,7 @@
     <!-- Brand -->
     <h1 id="brand">{% if hotel %}Rooms at {{ hotel.name }}{% else %}Hotel{% endif %}</h1>
 
-    <!-- Main Content -->
+
     <div class="content">
         {% if room_list %}
             {% for room_type, room_url in room_list %}
