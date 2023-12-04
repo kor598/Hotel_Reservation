@@ -6,13 +6,13 @@
     <title>Payment Success</title>
 </head>
 <body>
-
     <h1>Payment Successful</h1>
 
-    <p>Thank you for your payment!</p>
+    <p>Booking Details:</p>
+    <p>Booking ID: {{ booking.id }}</p>
 
-    <h2>Order Details</h2>
-    
+    <p>Order Details:</p>
+    <p>Order ID: {{ order.id }}</p>
     <p>User: {{ order.user.username }}</p>
     <p>Amount: {{ order.amount }}</p>
     <p>Status: {{ order.status }}</p>
