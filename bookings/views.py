@@ -128,7 +128,7 @@ class RoomDetailView(View):
                     self.request,
                     f'Your booking for a {room_type} room from {formatted_check_in} to {formatted_check_out} has been confirmed! Thank you for choosing us.'
                 )
-                return render(request, 'booking_confirmation.html', context)
+                return redirect('paypal-payment', booking_id=booking.booking_id)
             else:
                 return HttpResponse('No rooms available for the selected dates. Please try a different room or date.')
         else:
