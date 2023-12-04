@@ -51,8 +51,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>{{ user.username }}, your membership tier is Standard</h1>
-        <p>Points = 250</p>
+        <h1>{{ user.username }}, your membership tier is {{ membership_tier }}</h1>
+        <p>Points = {{ total_points }}</p>
     </div>
 
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
