@@ -51,15 +51,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Hello, {{ user.username }}! You are a guest</h1>
-        <p>Explore your options below:</p>
-        <a href="{% url 'hotel:RoomListView' %}" class="btn btn-primary">Book a Room</a>
-        <a href="{% url 'bookings:BookingListView' %}" class="btn btn-primary">My Bookings</a>
-    <p><a href="{% url 'accounts:logout' %}">Log Out</a></p>
-    <p><a href="{% url 'accounts:password_reset' %}">Reset Password</a></p>
-    <p><a href="{% url 'accounts:update_profile' %}">Update Profile</a></p>
-        <a href="{% url 'loyaltySystem:loyalty_view' %}" class="btn btn-primary">Loyalty-Scheme</a>
-
+        <h1>{{ user.username }}, your membership tier is Standard</h1>
+        <p>Points = 250</p>
     </div>
 
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>

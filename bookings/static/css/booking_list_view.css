@@ -3,13 +3,18 @@
     margin:0;
     box-sizing: border-box;
 }
-body{
-    font-family: sans-serif;
-    background-color: rgb(46, 47, 48);
-    color: rgb(236, 235, 228);
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    color: grey;
     line-height: 1.5;
     font-size: 1.2rem;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
 }
 
 .content{
@@ -17,15 +22,17 @@ body{
     flex-direction: column;
 }
 
-.header{
-    flex: 1;
+.header {
     display: flex;
-    flex-flow: row-reverse wrap;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 20px;
 }
+
 .headings{
+    margin-top: 20px;
     flex:1.5;
+    color: gray;
 }
 .home{
     flex:0.1;
@@ -44,7 +51,7 @@ body{
     max-width:20vw;
     min-width: 20rem;
     text-align: left;
-    border: 1px solid #dbdbdb;
+    border: 3px solid #007bff;
     padding:1rem;
     border-radius: 0.75rem;
     margin:1rem;
@@ -58,7 +65,7 @@ img{
 }
 a i{
     margin: 1rem;
-    color:rgb(236, 235, 228);
+    color:#007bff;
     text-decoration: none;
 }
 .home a i{
@@ -68,6 +75,7 @@ a i{
 
 h1,h2{
     margin:1rem;
+    color: #007bff;
 }
 .booking a i{
     font-size: 1.1rem;
@@ -83,4 +91,29 @@ h1,h2{
 .cancel a i:hover{
     color: rgb(206, 43, 43);
     
+}
+
+.check-btns {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Decrease space between buttons */
+}
+
+/* Specific button styles */
+.check button {
+    background-color: #007bff; /* Primary color for buttons */
+    border: none;
+    color: #ffffff; /* White text for buttons */
+    text-decoration: none;
+    padding: 10px 20px; /* Adjust padding for better button size */
+    border-radius: 5px; /* Soften edges */
+    transition: background-color 0.3s ease; /* Add transition for smoother change on hover */
+}
+
+.check button + button {
+    margin-left: 50px;
+}
+
+.check button:hover {
+    background-color: #0056b3;
 }

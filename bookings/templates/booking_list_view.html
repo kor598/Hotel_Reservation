@@ -16,6 +16,7 @@
             <div class="headings">
                 <h1>Your Bookings</h1>
                 <h2>Welcome {{user}}</h2>
+                <p>View your bookings here.</p>
             </div>
             <div class="home">
                 <!-- Div 1: Back to Home -->
@@ -50,14 +51,16 @@
                 </div>
                 <div class="actions">
                     <!-- Check-in button -->
-                    <form action="{% url 'bookings:CheckInView' room_id=booking.room_id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit">Check-in</button>
-                    </form>
-                    <form action="{% url 'bookings:CheckOutView' room_id=booking.room_id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit">Check-out</button>
-                    </form>
+                    <div class="check-btns">
+                        <form action="{% url 'bookings:CheckInView' room_id=booking.room_id %}" method="post" class="check">
+                            {% csrf_token %}
+                            <button type="submit">Check-in</button>
+                        </form>
+                        <form action="{% url 'bookings:CheckOutView' room_id=booking.room_id %}" method="post" class="check">
+                            {% csrf_token %}
+                            <button type="submit">Check-out</button>
+                        </form>
+                    </div>
                     <div class="cancel">
                         <a href="{% url 'bookings:CancelBookingView' pk=booking.pk %}" class="invisible">
                             <i class="far fa-2x fa-times-zcircle"> Cancel Booking</i>
