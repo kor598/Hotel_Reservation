@@ -6,9 +6,9 @@ from .models import *
 from django.contrib.auth.views import LogoutView, PasswordResetView
 from django.views import View
 from django.contrib.auth.decorators import user_passes_test
-from hotel.models import Hotel, HotelRoom, Room
-from hotel.room_status import RoomStatus
+from hotel.models import Hotel, Room
 from django.contrib import messages
+from loyaltySystem.models import LoyaltySystem
 
 # Create your views here.
 def index(request):
@@ -47,7 +47,10 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-
+                
+                loyalty_system = LoyaltySystem.objects.get(user=user)
+                loyalty_system.update_membership_tier()
+                
                 cleaner_group = Group.objects.filter(name='Cleaners').first()
                 guests_group = Group.objects.filter(name='Guests').first()
                 #Redirecting users based on groups

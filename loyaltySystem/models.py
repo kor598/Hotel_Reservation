@@ -37,6 +37,8 @@ class LoyaltySystem(models.Model):
             self.membership_tier = "Gold"
         elif total_nights >= 20:
             self.membership_tier = "Silver"
+        elif total_nights < 20:
+            self.membership_tier = "Standard"
             
         self.save()
         
