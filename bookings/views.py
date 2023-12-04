@@ -50,7 +50,7 @@ class CheckInView(View):
             return HttpResponseBadRequest("Cannot check in: Check-in time is before 4 PM.")
         
         # Check if the room status is clean
-        if room.room_status != 'cleaned':
+        if room.room_status != 'CLEANED':
             return HttpResponseBadRequest("Cannot check in: Room is not clean. Please contact a staff member.")
         
         if room.room_status != 'checked_in':
