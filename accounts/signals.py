@@ -1,4 +1,5 @@
-from django.contrib.auth.signals import user_logged_in, post_save
+from django.contrib.auth.signals import user_logged_in
+from django.db.models.signals import post_save
 from django.dispatch import receiver 
 from loyaltySystem.models import LoyaltySystem, StandardGuest, SilverGuest, GoldGuest, DiamondGuest
 from .models import User
