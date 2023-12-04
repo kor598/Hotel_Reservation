@@ -1,77 +1,146 @@
-<!doctype html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
-
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-
-    <!-- Style -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-    <title>Multiple user login</title>
-  </head>
-  <body>
-  <div class="content">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-6 contents">
-          <div class="row justify-content-center">
-            <div class="col-md-12">
-              <div class="form-block">
-                  <div class="mb-4">
-                      <h1>User Registration page</h1>
+    <title>Multiple User Registration</title>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa; /* Light gray background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-block {
+            background-color: #ffffff; /* White background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #007bff; /* Primary color */
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #495057; /* Dark gray text color */
+            text-align: center;
+        }
+
+        .btn-group {
+            text-align: center;
+        }
+
+        .form-group {
+            text-align: center; /* Center text boxes */
+        }
+
+        .form-group input {
+            width: 100%; /* Make text boxes full width */
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* Primary color for buttons */
+            border: none;
+            display: inline-block;
+        }
+
+        .btn-primary a {
+            color: #ffffff; /* White text for buttons */
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+
+        .mb-4 {
+            margin-bottom: 20px; /* Increased margin for the heading */
+        }
+
+        .text-muted {
+            color: #6c757d; /* Subdued text color */
+        }
+
+        .text-error {
+            color: #dc3545; /* Error text color */
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 contents">
+                    <div class="row justify-content-center">
+                        <div class="col-md-12">
+                            <div class="form-block">
+                                <div class="mb-4">
+                                    <h1>User Registration</h1>
+                                </div>
+                                <span class="mb-0 text-muted">
+                                    {% if msg %}
+                                        {{ msg | safe }}
+                                    {% else %}
+                                        Registration page
+                                    {% endif %}
+                                </span>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group first">
+                                        <label for="username">Username</label>
+                                        {{ form.username }}
+                                    </div>
+                                    <div class="form-group first">
+                                        <label for="email">Email</label>
+                                        {{ form.email}}
+                                    </div>
+                                    <div class="form-group last mb-4">
+                                        <label for="password">Password</label>
+                                        {{ form.password1 }}
+                                    </div>
+                                    <div class="form-group last mb-4">
+                                        <label for="password">Confirm Password</label>
+                                        {{ form.password2 }}
+                                    </div>
+                                    <span class="text-error">{{ form.errors }}</span>
+                                    <input type="submit" value="Register" class="btn btn-pill text-white btn-block btn-primary">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                  <span class="mb-0 text-muted">
-                {% if msg %}
-                    {{ msg | safe }}
-                {% else %}
-                    Login page
-                {% endif %}
-              </span>
-                <form  method="post">
-                    {% csrf_token %}
-                  <div class="form-group first">
-                    <label for="username">Username</label>
-                      {{ form.username }}
-                  </div>
-                  <div class="form-group first">
-                    <label for="email">Email</label>
-                      {{ form.email}}
-                  </div>
-                  <div class="form-group last mb-4">
-                    <label for="password">Password</label>
-                      {{ form.password1 }}
-                  </div>
-                  <div class="form-group last mb-4">
-                    <label for="password">confirm Password</label>
-                      {{ form.password2 }}
-                  </div>
-                  </div>
-                    <span class="text-error">{{ form.errors }}</span>
-                  <input type="submit"  value="Register" class="btn btn-pill text-white btn-block btn-primary">
-                </form>
-              </div>
             </div>
-          </div>
         </div>
-
-      </div>
     </div>
-  </div>
-
 
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
-  </body>
+</body>
 </html>

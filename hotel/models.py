@@ -71,6 +71,7 @@ class Room(models.Model):
             loyalty_system = LoyaltySystem.objects.get(user=user)
 
             loyalty_system.total_points += relevant_booking.points_earned
+            loyalty_system.update_membership_tier()
             loyalty_system.save()
 
             self.room_status = RoomStatus.CHECKED_IN.value
