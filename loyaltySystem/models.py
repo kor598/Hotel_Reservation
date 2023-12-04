@@ -3,18 +3,23 @@ from datetime import datetime, timedelta, timezone
 from accounts.models import User
 from django.utils import timezone
 
+# Custom manager for LoyaltySystem model
 class LoyaltySystemManager(models.Manager):
     pass
 
+# LoyaltySystem model representing loyalty information for users
 class LoyaltySystem(models.Model):
+    # One-to-one relationship with the User model
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     total_points = models.IntegerField(default=0)
     membership_tier = models.CharField(max_length=50, default="Standard")
     last_checkin_date = models.DateTimeField(auto_now_add=True)
     
+    # Custom manager for LoyaltySystem model
     objects = LoyaltySystemManager()
 
+    # Method to update the membership tier based on total nights stayed
     def update_membership_tier(self):
         # Calculate the date 366 days ago from today
         end_date = timezone.now()
@@ -31,6 +36,7 @@ class LoyaltySystem(models.Model):
         # Calculate the total number of nights stayed
         total_nights = sum(booking.nights_of_stay() for booking in relevant_bookings)
 
+        # Update membership tier based on total nights stayed
         if total_nights >= 100:
             self.membership_tier = "Diamond"
         elif total_nights >= 50:
@@ -42,6 +48,7 @@ class LoyaltySystem(models.Model):
             
         self.save()
         
+# Subclasses representing different guest types, inheriting from LoyaltySystem
 class StandardGuest(LoyaltySystem):
     loyaltysystem_ptr = models.OneToOneField(LoyaltySystem, on_delete=models.CASCADE, parent_link=True, default=0)
 

@@ -49,7 +49,7 @@ class Room(models.Model):
         return f'{self.room_number}: {self.room_type} with {self.room_beds} beds for {self.room_capacity} people'
     
     def check_in(self):
-        from bookings.models import Booking  # Import here to break the circular dependency
+        from bookings.models import Booking
 
         today = date.today()
 

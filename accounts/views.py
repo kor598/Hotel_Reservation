@@ -106,6 +106,7 @@ class CustomPasswordResetView(PasswordResetView):
             messages.error(self.request, 'User not found. Please check your email or username.')
             return super().form_invalid(form)
 
+@login_required
 def cleaners_view(request):
     selected_hotel_id = request.POST.get('hotel')
     selected_hotel = None
