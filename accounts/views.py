@@ -42,7 +42,10 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-
+                
+                loyalty_system = LoyaltySystem.objects.get(user=user)
+                loyalty_system.update_membership_tier()
+                
                 staff_group = Group.objects.filter(name='Staff').first()
                 guests_group = Group.objects.filter(name='Guests').first()
                 #Redirecting users based on groups

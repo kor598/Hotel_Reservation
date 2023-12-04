@@ -3,9 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Checked-In</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            text-align: center;
+            color: #555;
+        }
+
+        div {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        p {
+            font-size: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
-    <p>you've checkedity in</p>
+    <div>
+        <h1>Welcome!</h1>
+        <p>You've successfully checked in, and points have been added to your account.</p>
+    </div>
 </body>
+<div class="header">
+    <div class="home">
+        <div class="home">
+            {% csrf_token %}
+            <a href="{% url 'accounts:guestpls' %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
+        </div>
+    </div>
+
+</div>
 </html>
