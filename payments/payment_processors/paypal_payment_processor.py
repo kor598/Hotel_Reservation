@@ -7,17 +7,17 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 
 # concrete strategy for PayPal
-class PaypalPaymentProcessor(PaymentStrategy, View):
+class PayPalPaymentProcessor(PaymentStrategy, View):
 
     def process_payment(self, request, booking):
         host = request.get_host()
 
         paypal_dict = {
             'business': settings.PAYPAL_RECEIVER_EMAIL,
-            'amount': str(booking.total_price),  # replace with actual amount
-            'item_name': f'Booking {booking.id}',  # replace with relevant information
+            'amount': booking.total_price, 
+            'item_name': f'Booking # {booking.id}',  
             'invoice': str(uuid.uuid4()),
-            'currency_code': 'USD',
+            'currency_code': 'EUR',
             'notify_url': request.build_absolute_uri(reverse('paypal-ipn')),
             'return_url': request.build_absolute_uri(reverse('payment_success')),
             'cancel_return': request.build_absolute_uri(reverse('payment_failure')),
