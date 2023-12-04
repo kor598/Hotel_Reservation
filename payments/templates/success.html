@@ -7,6 +7,7 @@
 </head>
 <body>
     <h1>Payment Successful</h1>
+    <h1>Booking Confirmation</h1>
 
     <p>Booking Details:</p>
     <p>Booking ID: {{ booking.id }}</p>
@@ -17,5 +18,14 @@
     <p>Amount: {{ order.amount }}</p>
     <p>Status: {{ order.status }}</p>
     
+        <p>Your booking for a {{ room_type }} room has been confirmed!</p>
+        <p>Check-in: {{ booking.check_in_date }}</p>
+        <p>Check-out: {{ booking.check_out_date }}</p>
+        <p>Points earned: {{ booking.points_earned }} Points will be added to account upon checking in</p>
+    
+    <div class="home">
+        <a href="{% url 'bookings:BookingListView' %}"><i class="fas fa-arrow-alt-circle-left"></i>Home</a>
+    </div>
+
 </body>
 </html>
