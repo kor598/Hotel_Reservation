@@ -61,6 +61,7 @@ class CheckInView(View):
         room.save()
         return render(request, 'check_in_success.html', {'room': room})
 
+# check out view
 class CheckOutView(View):
     def get(self, request, room_id):
         room = get_object_or_404(Room, id=room_id)
@@ -72,6 +73,7 @@ class CheckOutView(View):
         room.save()
         return render(request, 'check_out_success.html', {'room': room})
 
+# booking list view. shows bookings
 class BookingListView(ListView):
     model = Booking
     template_name = 'booking_list_view.html'
@@ -158,7 +160,8 @@ class RoomDetailView(View):
                 return HttpResponse('No rooms available for the selected dates. Please try a different room or date.')
         else:
             return HttpResponse('Form data is not valid.')
-        
+
+# booking confirmation view      
         
 class BookingConfirmationView(View):
     def get(self, request, room_id):
@@ -179,6 +182,7 @@ class BookingConfirmationView(View):
 
         return render(request, 'booking_confirmation.html', context)
 
+# booking cancel view
 class CancelBookingView(DeleteView):
     model = Booking
     template_name = 'booking_cancel_view.html'

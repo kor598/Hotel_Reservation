@@ -19,7 +19,7 @@ def room_list_view(request, hotel_id):
     hotel = get_object_or_404(Hotel, id=hotel_id)
     rooms = Room.objects.filter(hotel=hotel)  # Filter rooms related to the selected hotel
     room_list = get_room_type_url_list(rooms)
-    context = {'hotel': hotel, 'room_list': room_list}  # Ensure it's 'room_list' in the context
+    context = {'hotel': hotel, 'room_list': room_list} 
     return render(request, 'room_list_view.html', context)
 
 
@@ -28,7 +28,7 @@ def generate_hotel_with_rooms(hotel_name, num_rooms):
 
     if hotel_exists:
         existing_hotel = Hotel.objects.get(name=hotel_name)
-        return False, existing_hotel  # Failure, returning existing hotel
+        return False, existing_hotel  
     else:
         # Create a new hotel with the provided name and number of rooms
         new_hotel = Hotel.objects.create(name=hotel_name, number_of_rooms=num_rooms)
@@ -37,6 +37,6 @@ def generate_hotel_with_rooms(hotel_name, num_rooms):
         created_rooms = create_rooms_for_hotel(new_hotel, num_rooms)
 
         if created_rooms:
-            return True, created_rooms  # Success and the created rooms
+            return True, created_rooms  
         else:
-            return False, new_hotel  # Failure, returning the newly created hotel
+            return False, new_hotel  

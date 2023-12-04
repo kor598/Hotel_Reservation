@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from hotel.views import create_rooms_for_standard_hotel
 
+# generates a hotel with a nukmber of rooms
 class Command(BaseCommand):
     help = 'Generates a hotel with rooms'
 
