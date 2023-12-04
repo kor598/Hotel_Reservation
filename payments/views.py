@@ -15,6 +15,7 @@ def get_payment_strategy(processor_type):
     return payment_strategies.get(processor_type)
 
 def process_payment(request, processor_type, booking_id):
+    
     # Retrieve booking details based on booking_id
     booking = get_object_or_404(Booking, id=booking_id)
 
@@ -25,27 +26,6 @@ def process_payment(request, processor_type, booking_id):
     if payment_strategy:
         payment_processor = payment_strategy()
 
-        # Process payment with booking details
-        return payment_processor.process_payment(request, booking)
-    # Handle unsupported payment method
+        return payment_processor.process_payment(request, booking_id)
+
     return render(request, 'error.html', {'error_message': 'Payment method not found'})
-
-def payment_success(request):
-    
-    booking_id = request.GET.get('booking_id')  # Retrieve booking ID from request
-    booking = Booking.objects.get(pk=booking_id)  # Fetch the corresponding booking object
-    booking.payment_status = 'Paid'
-    booking.save()
-
-    # You can render a success page or message to the user
-    return render(request, 'success.html')
-
-def payment_failure(request):
-    
-    booking_id = request.GET.get('booking_id')  # Retrieve booking ID from request
-    booking = Booking.objects.get(pk=booking_id)  # Fetch the corresponding booking object
-    booking.payment_status = 'Paid'
-    booking.save()
-
-    # You can render a success page or message to the user
-    return render(request, 'failure.html')
