@@ -64,7 +64,6 @@ class Booking(models.Model):
         loyalty_details = LoyaltySystem.objects.get(user=self.user)
         membership_tier = loyalty_details.membership_tier
         
-        # currently stored as user.membership_tier. CHANGE WHEN RAJAT IS DONE
         if membership_tier == 'Silver':
             points_per_night = 110
         elif membership_tier == 'Gold':
