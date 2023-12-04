@@ -36,7 +36,6 @@ class UserManager(BaseUserManager):
         user = self.create_user(email, username=username, password=password, **extra_fields)
         guests_group, _ = Group.objects.get_or_create(name='Guests')
         user.groups.add(guests_group)
-        LoyaltySystem.objects.create(user=user, name=user.username)
         return user
     
     def create_cleaner(self, email, username, password=None, **extra_fields):
@@ -47,9 +46,3 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     objects = UserManager()
-    
-from loyaltySystem.models import LoyaltySystem, StandardGuest, SilverGuest, GoldGuest, DiamondGuest
-@receiver(post_save, sender=User)
-def create_loyalty_system(sender, instance, created, **kwargs):
-    if created and instance.groups.filter(name='Guests').exists():
-        LoyaltySystem.objects.create(user=instance, name=instance.username)

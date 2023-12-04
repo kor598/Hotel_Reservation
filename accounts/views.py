@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect
 from .forms import LoginForm, GuestRegisterForm, CustomUserChangeForm, ChangeRoomStatusForm
 from django.contrib.auth import authenticate, login
 from .models import *
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LogoutView, PasswordResetView
 from django.views import View
 from django.contrib.auth.decorators import user_passes_test
 from hotel.models import HotelRoom
 from hotel.room_status import RoomStatus
+from django.contrib import messages
+
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
@@ -85,6 +87,20 @@ class CustomLogoutView(LogoutView):
         super().get(request, *args, **kwargs)
         # Redirect to login page
         return redirect('accounts:login_view')
+
+class CustomPasswordResetView(PasswordResetView):
+    def form_valid(self, form):
+        # Check if the user with the provided email or username exists
+        email = form.cleaned_data['email']  # Assuming your form has an 'email' field
+        user_exists = User.objects.filter(email=email).exists()
+
+        if user_exists:
+            messages.success(self.request, 'Password reset email sent successfully.')
+            return super().form_valid(form)
+        else:
+            # User is not in the database, show an error message
+            messages.error(self.request, 'User not found. Please check your email or username.')
+            return super().form_invalid(form)
 
 def cleaners_view(request):
     # Get all checked-out rooms
