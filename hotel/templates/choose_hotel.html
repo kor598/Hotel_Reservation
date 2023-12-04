@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Hotel</title>
+    <!-- Main StyleSheet -->
+    <!-- <link rel="stylesheet" href="{% static 'css/choose_hotel.css' %}"> -->
+</head>
+
+<body>
+    <!-- Brand -->
+    <h1 id="brand">Choose Hotel</h1>
+
+    <!-- Main Content -->
+    <div class="content">
+        {% if hotels %}
+            <ul>
+                {% for hotel in hotels %}
+                    <li>
+                        <a href="{% url 'hotel:RoomListView' hotel_id=hotel.id %}" class="hotel-link">{{ hotel.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hotels available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

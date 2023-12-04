@@ -12,27 +12,29 @@
 
 <body>
     <!-- Brand -->
-    <h1 id="brand">Hotel</h1>
+    <h1 id="brand">{% if hotel %}Rooms at {{ hotel.name }}{% else %}Hotel{% endif %}</h1>
 
     <!-- Main Content -->
     <div class="content">
         {% if room_list %}
             {% for room_type, room_url in room_list %}
-            <div class="room">
-                <a href="{{room_url}}">
-                    <div class="image">
-                        {% if room_image %}
-                            <img src="{{ room_image }}">
-                        {% else %}
-                            <img
-                            src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60">
-                    
-                        {% endif %}
-                    </div>
-                    <h2>{{room_type}} Room</h2>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Commodi</p>
-                </a>
-            </div>
+                <a href="{% url 'hotel:RoomListView' hotel.id %}" class="room-link">
+                <div class="room">
+                    <a href="{{room_url}}">
+                        <div class="image">
+                            {% if room_image %}
+                                <img src="{{ room_image }}">
+                            {% else %}
+                                <img
+                                src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60">
+                            
+                            {% endif %}
+                        </div>
+                        <h2>{{room_type}} Room</h2>
+                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Commodi</p>
+                    </a>
+                </div>
+            </a>
             {% endfor %}
         {% else %}
             <p>No rooms available.</p>
