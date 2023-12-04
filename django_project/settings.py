@@ -17,17 +17,17 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 #Use this to access email links from the console
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #This is to test emails in mailtrap, the forgot password function does not check for user in database without proper
 #email backend set up
 
 # settings.py
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER = '3bc9067aefa143'
-EMAIL_HOST_PASSWORD = 'b0043f8c8f9029'
-EMAIL_PORT = '2525'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+# EMAIL_HOST_USER = '3bc9067aefa143'
+# EMAIL_HOST_PASSWORD = 'b0043f8c8f9029'
+# EMAIL_PORT = '2525'
 
 
 # Quick-start development settings - unsuitable for production

@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from .forms import LoginForm, GuestRegisterForm, CustomUserChangeForm, ChangeRoomStatusForm
 from django.contrib.auth import authenticate, login
 from .models import *
 from django.contrib.auth.views import LogoutView, PasswordResetView
 from django.views import View
 from django.contrib.auth.decorators import user_passes_test
-from hotel.models import HotelRoom
+from hotel.models import Hotel, HotelRoom, Room
 from hotel.room_status import RoomStatus
 from django.contrib import messages
 
@@ -103,30 +104,36 @@ class CustomPasswordResetView(PasswordResetView):
             return super().form_invalid(form)
 
 def cleaners_view(request):
-    # Get all checked-out rooms
-    checked_out_rooms = HotelRoom.objects.filter(room__room_status=RoomStatus.CHECKED_OUT.value)
-    print(checked_out_rooms)
-    if request.method == 'POST':
-        # Check if the form is valid (you need to create the form in your forms.py)
-        form = ChangeRoomStatusForm(request.POST)
-        if form.is_valid():
-            # Get the selected room from the form
-            selected_room = form.cleaned_data['room']
+    selected_hotel_id = request.POST.get('hotel')
+    selected_hotel = None
+    all_rooms_for_hotel = None
 
-            # Use the clean_room function to change the status
-            selected_room.room.clean_room()
+    if selected_hotel_id:
+        selected_hotel = Hotel.objects.get(id=selected_hotel_id)
+        all_rooms_for_hotel = selected_hotel.rooms.all()
 
-            # Redirect to the same view to update the room list
-            return redirect('cleaners_view')
+    hotels = Hotel.objects.all()
 
-    else:
-        form = ChangeRoomStatusForm()
-
-    context = {'checked_out_rooms': checked_out_rooms, 'form': form}
+    context = {
+        'hotels': hotels,
+        'selected_hotel': selected_hotel,
+        'all_rooms_for_hotel': all_rooms_for_hotel,
+    }
     return render(request, 'cleaners.html', context)
+
 
 def guestpls(request):
     return render(request,'guesttemp.html')
 
 def test_view(request):
     return render(request, 'test.html')
+
+
+def update_room_status(request, room_id):
+    if request.method == 'POST':
+        room = get_object_or_404(Room, id=room_id)
+        room.clean_room() 
+
+        return redirect('accounts:cleaners_view')  # Redirect to cleaners view after updating
+
+    return HttpResponse("Invalid Request")  # Handle GET requests or other invalid requests
