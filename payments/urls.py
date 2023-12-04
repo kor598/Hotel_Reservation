@@ -13,9 +13,6 @@ urlpatterns = [
     path('payment-cancelled/paypal/<int:booking_id>/', PayPalPaymentProcessor.as_view(), name='paypal-cancelled'),
     
 
-    # path('payment-success/', payment_success, name='payment_success'),
-    # path('payment-failure/', payment_failure, name='payment_failure'),
-
     # Stripe urls
     path('payment/stripe/<int:booking_id>/', StripePaymentProcessor),
     path('payment-success/stripe/', StripePaymentProcessor, name='stripe-return'),

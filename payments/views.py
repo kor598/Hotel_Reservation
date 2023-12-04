@@ -6,7 +6,7 @@ from bookings.models import Booking
 
 def get_payment_strategy(processor_type):
 
-    # payment strategies available
+    # payment strategies available 
     payment_strategies = {
         'paypal': PayPalPaymentProcessor,
         'stripe': StripePaymentProcessor,
@@ -24,8 +24,9 @@ def process_payment(request, processor_type, booking_id):
 
     # Check if the payment strategy is available
     if payment_strategy:
+        # Instantiate the payment strategy
         payment_processor = payment_strategy()
-
+        # Process the payment with booking_id
         return payment_processor.process_payment(request, booking_id)
 
     return render(request, 'error.html', {'error_message': 'Payment method not found'})
