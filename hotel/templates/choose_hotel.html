@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choose Hotel</title>
     <!-- Main StyleSheet -->
-    <!-- <link rel="stylesheet" href="{% static 'css/choose_hotel.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/choose_hotel.css' %}"> 
 </head>
 
 <body>
@@ -16,13 +16,11 @@
     <!-- Main Content -->
     <div class="content">
         {% if hotels %}
-            <ul>
+            <div class="button-container">
                 {% for hotel in hotels %}
-                    <li>
-                        <a href="{% url 'hotel:RoomListView' hotel_id=hotel.id %}" class="hotel-link">{{ hotel.name }}</a>
-                    </li>
+                    <a href="{% url 'hotel:RoomListView' hotel_id=hotel.id %}" class="hotel-button">{{ hotel.name }}</a>
                 {% endfor %}
-            </ul>
+            </div>
         {% else %}
             <p>No hotels available.</p>
         {% endif %}

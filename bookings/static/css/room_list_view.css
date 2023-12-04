@@ -5,8 +5,8 @@
     box-sizing: border-box;
 }
 body{
-    background-color: rgb(46, 47, 48);
-    color: rgb(236, 235, 228);
+    background-color: #f8f9fa;
+    color: #007bff; 
     font-family: sans-serif;
     line-height: 1.25;
 }
@@ -14,7 +14,7 @@ body{
 /*Brand CSS */
 #brand{
     text-align: center;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 3rem;
     margin: 1.5rem;
 }
@@ -36,12 +36,12 @@ body{
     border-radius: 1rem;
     padding:1rem;
     margin:0.5rem;
-    background-color: #444;
+    background-color: #f8f9fa;
     flex: 1;
 }
 
 .room:hover{
-    background-color: #353535;
+    background-color: lightgrey; 
 }
 
 /* Inside Room Divs */
@@ -50,7 +50,7 @@ h2{
 }
 a{
     text-decoration: none;
-    color: #dbdbdb;
+    color: #007bff; 
 }
 img{
     max-width:90%;
