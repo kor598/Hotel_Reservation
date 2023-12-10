@@ -6,7 +6,7 @@ from .models import *
 from django.contrib.auth.views import LogoutView, PasswordResetView
 from django.views import View
 from django.contrib.auth.decorators import user_passes_test
-from hotel.models import Hotel, Room
+from hotel.models import CleanedState, Hotel, Room
 from django.contrib import messages
 from loyaltySystem.models import LoyaltySystem
 
@@ -137,8 +137,10 @@ def test_view(request):
 def update_room_status(request, room_id):
     if request.method == 'POST':
         room = get_object_or_404(Room, id=room_id)
-        room.clean_room() 
-
+        
+        cleaned_state = CleanedState()
+        cleaned_state.handle(room)
+        
         return redirect('accounts:cleaners_view')  # Redirect to cleaners view after updating
 
     return HttpResponse("Invalid Request")  # Handle GET requests or other invalid requests
