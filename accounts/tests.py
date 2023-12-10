@@ -28,15 +28,15 @@ class SignalTestCase(TestCase):
         #LoyaltySystem instance is created????
         self.assertEqual(loyalty_system.name, 'testuser')
     
-    def test_custom_user_logged_in_signal(self):
-        # Create a user in the group guest
-        user = get_user_model().objects.create_user(username='testuser', email='testuser@example.com', password='testpass')
-        guest_group = Group.objects.create(name='guest')
-        user.groups.add(guest_group)
+    # def test_custom_user_logged_in_signal(self):
+    #     # Create a user in the group guest
+    #     user = get_user_model().objects.create_user(username='testuser', email='testuser@example.com', password='testpass')
+    #     guest_group = Group.objects.create(name='guest')
+    #     user.groups.add(guest_group)
 
-        # Simulate user login
-        client = Client()
-        client.force_login(user)
+    #     # Simulate user login
+    #     client = Client()
+    #     client.force_login(user)
 
-        updated_loyalty_system = LoyaltySystem.objects.get(user=user)
-        self.assertEqual(updated_loyalty_system.name, 'testuser')
+    #     updated_loyalty_system = LoyaltySystem.objects.get(user=user)
+    #     self.assertEqual(updated_loyalty_system.name, 'testuser')

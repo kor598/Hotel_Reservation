@@ -9,12 +9,13 @@ from django.contrib.auth.decorators import user_passes_test
 from hotel.models import CleanedState, Hotel, Room
 from django.contrib import messages
 from loyaltySystem.models import LoyaltySystem
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
 
 #view for registering guests, only for guests as method assigns them to guest group
+@login_required
 def guest_register(request):
     msg = None
     if request.method == 'POST':
@@ -106,7 +107,7 @@ class CustomPasswordResetView(PasswordResetView):
             messages.error(self.request, 'User not found. Please check your email or username.')
             return super().form_invalid(form)
 
-#login_required
+@login_required
 def cleaners_view(request):
     selected_hotel_id = request.POST.get('hotel')
     selected_hotel = None
