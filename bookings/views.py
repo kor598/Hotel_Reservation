@@ -8,6 +8,8 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.views.generic import ListView, FormView, View, DeleteView
 from django.urls import reverse, reverse_lazy
+
+from hotel.room_status import RoomStatus
 from .forms import AvailabilityForm
 
 from bookings.booking_functions.availability import check_availability
@@ -17,7 +19,7 @@ from bookings.booking_functions.book_room import book_room
 from hotel.room_functions.get_room_type import get_room_type
 
 from bookings.models import Booking
-from hotel.models import Room
+from hotel.models import CheckedInState, CheckedOutState, Room
 
 from django.views.generic import DeleteView
 
@@ -30,17 +32,14 @@ class CheckInView(View):
     def post(self, request, room_id):
         room = get_object_or_404(Room, id=room_id)
         
-        
-        # Get all bookings for the room
         room_bookings = Booking.objects.filter(room=room)
         
         if not room_bookings:
             return HttpResponseBadRequest("No bookings found for this room.")
         
-        # Check if the current date matches any booking date for the room
         current_date = timezone.now().date()
         current_time = timezone.now().time()
-        check_in_time = time(16, 0, 0)  # 4 PM set check in time
+        check_in_time = time(16, 0, 0)  # 4 PM set check-in time
         
         matching_booking = room_bookings.filter(check_in_date__date=current_date).first()
         
@@ -49,17 +48,23 @@ class CheckInView(View):
         elif matching_booking.check_in_date.time() < check_in_time:
             return HttpResponseBadRequest("Cannot check in: Check-in time is before 4 PM.")
         
-        # Check if the room status is clean
-        if room.room_status != 'CLEANED':
+        if room.room_status != RoomStatus.CLEANED.value:
             return HttpResponseBadRequest("Cannot check in: Room is not clean. Please contact a staff member.")
         
-        if room.room_status != 'checked_in':
+        if room.room_status == RoomStatus.CHECKED_IN.value:
             return HttpResponseBadRequest("You've already checked in!")
         
+        # Perform the check-in state transition
+        checked_in_state = CheckedInState()
+        points_earned = checked_in_state.handle(room)
         
-        room.check_in() 
-        room.save()
-        return render(request, 'check_in_success.html', {'room': room})
+        if points_earned is not None:
+            # Assuming successful check-in scenario where points are earned
+            room.save()
+            return render(request, 'check_in_success.html', {'room': room, 'points_earned': points_earned})
+        else:
+            # Handle error scenario where no booking is found for today
+            return HttpResponseBadRequest("Error: No booking found for today.")
 
 # check out view
 class CheckOutView(View):
@@ -69,9 +74,14 @@ class CheckOutView(View):
     
     def post(self, request, room_id):
         room = get_object_or_404(Room, id=room_id)
-        room.check_out() 
+        
+
+        checked_out_state = CheckedOutState()
+        checked_out_state.handle(room) 
+
         room.save()
         return render(request, 'check_out_success.html', {'room': room})
+
 
 # booking list view. shows bookings
 class BookingListView(ListView):
