@@ -15,7 +15,7 @@ def index(request):
     return render(request, 'index.html')
 
 #view for registering guests, only for guests as method assigns them to guest group
-@login_required
+
 def guest_register(request):
     msg = None
     if request.method == 'POST':
@@ -127,7 +127,7 @@ def cleaners_view(request):
     }
     return render(request, 'cleaners.html', context)
 
-
+@login_required
 def guestpls(request):
     return render(request,'guesttemp.html')
 
