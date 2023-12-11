@@ -8,6 +8,13 @@
     <title>Booking List</title>
     <script src="https://kit.fontawesome.com/692189991f.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/booking_list_view.css' %}">
+    <div class="home">
+        <!-- Back to Home -->
+        <div class="home">
+            {% csrf_token %}
+            <a href="{% url 'accounts:guestpls' %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
+        </div>
+    </div>
 </head>
 
 <body>
@@ -18,14 +25,6 @@
                 <h2>Welcome {{user}}</h2>
                 <p>View your bookings here.</p>
             </div>
-            <div class="home">
-                <!-- Back to Home -->
-                <div class="home">
-                    {% csrf_token %}
-                    <a href="{% url 'accounts:guestpls' %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
-                </div>
-            </div>
-
         </div>
         <div class="bookings">
             {% csrf_token %}
