@@ -10,7 +10,7 @@ urlpatterns = [
     path('register/', guest_register, name='guest_register'),
     path('cleaners/', cleaners_view, name='cleaners_view'),
     path('guesttemp/', guestpls, name='guestpls'),
-    path('logout/', CustomLogoutView.as_view(), name='logout'),
+    path('logout/', CustomLogoutView.as_view(), name='custom_logout'),
     path('update-profile/', update_profile, name='update_profile'),
     path('update_room_status/<int:room_id>/', update_room_status, name='update_room_status'),
     

@@ -1,15 +1,17 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import LoginForm, GuestRegisterForm, CustomUserChangeForm, ChangeRoomStatusForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .models import *
 from django.contrib.auth.views import LogoutView, PasswordResetView
 from django.views import View
-from django.contrib.auth.decorators import user_passes_test
 from hotel.models import CleanedState, Hotel, Room
 from django.contrib import messages
 from loyaltySystem.models import LoyaltySystem
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
+
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
@@ -86,10 +88,18 @@ def update_profile(request):
         form = CustomUserChangeForm(instance=request.user)
     return render(request, 'update_profile.html', {'form': form})
 
-class CustomLogoutView(LogoutView):
-    def get(self, request, *args, **kwargs):
-        #check logout has occured
-        super().get(request, *args, **kwargs)
+# class CustomLogoutView(LogoutView):
+#     def get(self, request, *args, **kwargs):
+#         #check logout has occured
+#         super().get(request, *args, **kwargs)
+#         # Redirect to login page
+#         return redirect('accounts:login_view')
+
+class CustomLogoutView(View):
+    @method_decorator(csrf_protect)
+    def post(self, request, *args, **kwargs):
+        # Perform logout
+        logout(request)
         # Redirect to login page
         return redirect('accounts:login_view')
 

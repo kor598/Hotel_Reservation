@@ -55,10 +55,14 @@
         <p>Explore your options below:</p>
         <a href="{% url 'hotel:choose_hotel' %}" class="btn btn-primary">Book a Room</a>
         <a href="{% url 'bookings:BookingListView' %}" class="btn btn-primary">My Bookings</a>
-    <p><a href="{% url 'accounts:logout' %}">Log Out</a></p>
     <p><a href="{% url 'accounts:password_reset' %}">Reset Password</a></p>
     <p><a href="{% url 'accounts:update_profile' %}">Update Profile</a></p>
         <a href="{% url 'loyaltySystem:loyalty_view' %}" class="btn btn-primary">Loyalty-Scheme</a>
+        <form action="{% url 'accounts:custom_logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Log Out</button>
+        </form>
+        
 
     </div>
 
